@@ -1,0 +1,6 @@
+.venv
+ogc_gazette_rml
+source_data_gazette
+tests
+poetry.lock
+pyproject.toml
