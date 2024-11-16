@@ -9,11 +9,16 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 
 ## Structure of the repository
 
-- **data**: original datasets. This folder is ignored in .gitignore to avoid updates of large datasets. To update data, please, manually do it through the web interface.
-- **doc**: documentation, examples, 
-- **lib**: external libraries
-- **out**: any output
-- **src**: code
+- **data**: 
+    - Original datasets. This folder is ignored in .gitignore to avoid updates of large datasets. To update data, please, manually do it through the web interface.
+- **doc**: 
+    - Documentation, examples, 
+- **lib**: 
+    - External libraries
+- **out**: 
+    - Any output
+- **src**: 
+    - Code
 
 ## Installation
 
@@ -21,10 +26,27 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 
 ## Source datasets
 
-Extraction:
-	- Source: from authoritative organisms (state) and not from other non official provider
+- Data 
+    - Directly available in the git:
+        - NSW, QLD, SA, VIC, WA
+    - To download:
+        - SA: 
+            - Option 1:
+                - Use the link `https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
+                - Save in `./data/SA`
+            - Option 2: with `wget`
+                - Install the command wget: 
+                    -`brew install wget`
+                - Download the data:
+                    - `wget -P ./data/SA https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
+    - Missing data:
+        - NT, TAS
+    - Tables of information can be under the formats: .csv, .dbf
 
-- Legend:
+- Source: 
+    From authoritative organisms (state) only and not from other non official provider
+
+- Legend for the table:
 	- DP: download page
 	- DL: direct link to the dataset
 	- API: URL of the API
