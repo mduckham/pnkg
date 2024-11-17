@@ -113,7 +113,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | TAS     | DP          | No published data: https://listdata.thelist.tas.gov.au/opendata/                                                          |                |                       |            |
 |         | DL          | (no)                                                                                                                      |                |                       |            |
-|         | API         | https://www.thelist.tas.gov.au/app/content/data/geo-meta-data-record?detailRecordUID=50e0ddfc-6638-4a8f-a965-7846d1924120 |                |                       |            |
+|         | API         | https://nre.tas.gov.au/Documents/REST%20endoint%20User%20Notes.pdf                                                        |                |                       |            |
 | **VIC** | DP          | https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp                                                                         | x              |                       | 15/11/2024 |
 |         | DL          | (no)                                                                                                                      |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
