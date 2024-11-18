@@ -1,0 +1,158 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex:<http://example2.com/ns#>.
+@base <http://example.com/ns#>.
+
+@prefix : <http://linked.data.gov.au/def/placenames/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://linked.data.gov.au/dataset/placename/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix geox: <http://linked.data.gov.au/def/geox#> .
+@prefix loci: <http://linked.data.gov.au/def/loci#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prof: <http://www.w3.org/ns/dx/prof/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix pt: <http://linked.data.gov.au/def/placetype/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix reg: <http://purl.org/linked-data/registry#> .
+@prefix schema: <https://schema.org/> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+<#PlaceNameMap> a rr:TriplesMap;
+
+  rml:logicalSource [
+    rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson";
+    rml:referenceFormulation ql:JSONPath;
+    rml:iterator "$.features[*]"
+];
+
+rr:subjectMap [
+    rr:template "http://linked.data.gov.au/def/placenames/{properties.recno}";
+];
+
+rr:predicateObjectMap [
+    rr:predicate :placeNameOf;
+    rr:objectMap [ 
+        rml:reference "properties.recno" 
+    ] 
+];
+
+rr:predicateObjectMap [
+    rr:predicate :hasPronounciation;
+    rr:objectMap [ 
+        rml:reference "" 
+    ] 
+];
+
+rr:predicateObjectMap [
+    rr:predicate :isIndigenous;
+    rr:objectMap [ 
+        rml:reference ""
+
+    ] 
+];
+
+rr:predicateObjectMap [
+    rr:predicate :name;
+    rr:objectMap [ 
+        rml:reference "properties.name";
+        rr:language "en-au"
+    ] 
+];
+
+rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+    rr:objectMap [ 
+        rml:reference "" 
+    ] 
+].
+
+
+# #####
+
+<#OfficialPlaceNameMap> a rr:TriplesMap;
+
+  rml:logicalSource [
+    rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson";
+    rml:referenceFormulation ql:JSONPath;
+    rml:iterator "$.features[*]"
+    ];
+
+    rr:subjectMap [
+        rr:template "http://linked.data.gov.au/def/placenames/{properties.recno}";
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate rdfs:member;
+        rr:objectMap [ 
+            rml:reference "properties.recno" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate loci:isMemberOf;
+        rr:objectMap [ 
+            rml:reference "" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :status;
+        rr:objectMap [ 
+            rml:reference ":official"
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :wasNamedBy;
+        rr:objectMap [ 
+            rml:reference "properties.lga" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :dateGazetted;
+        rr:objectMap [ 
+            rml:reference "properties.gazdate" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :datePublished;
+        rr:objectMap [ 
+            rml:reference "properties.date_cr_al" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :dateReleased;
+        rr:objectMap [ 
+            rml:reference "" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate :dateRetired;
+        rr:objectMap [ 
+            rml:reference "" 
+        ] 
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [ 
+            rml:reference "" 
+        ] 
+    ].
+
+# java -jar {path_rmlmapper} -m {path_rules_rml_completed} -o {path_export_ttl_bash} -s turtle
+
+# java -jar /Users/alexis/Documents/04_Code/semadaten/lib/rmlmapper-7.1.2-r374-all.jar -m /Users/alexis/Documents/04_Code/semadaten/src/SA.ttl -o /Users/alexis/Documents/04_Code/semadaten/out/test.rdf -s turtle
