@@ -86,7 +86,9 @@ The relevant paths of the mapping and output files should be mentioned in the co
     - Tables of information can be under the formats: .csv, .dbf
 
 - Source: 
-    From authoritative organisms (state) only and not from other non official provider
+    - From authoritative organisms (state) only and not from other non official provider
+    - Informal resources: [ICSM](https://www.icsm.gov.au/individual-state-and-territory-gazetteers)
+
 
 - Legend for the table:
 	- DP: download page
