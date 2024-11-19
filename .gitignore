@@ -5,3 +5,6 @@ tests
 poetry.lock
 pyproject.toml
 .gitignore
+.DS_Store
+pyrml
+converter.py
