@@ -1,0 +1,49 @@
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix pa: <http://linked.data.gov.au/def/placenames/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix loci: <http://linked.data.gov.au/def/loci#> .
+@prefix gkl_gaz: <http://example.com/ns/gazetteer#> .
+@prefix grel:    <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
+@prefix grelm:   <http://fno.io/grel/rmlmapping#> .
+@base <http://example.com/ns#>.
+
+<#AreasSource> a rml:LogicalSource ;
+    rml:source "./source_data_gazette/areas.csv" ;
+    rml:referenceFormulation ql:csv ;
+.
+
+<#AreasPlaceMapping> a rr:TriplesMap ;
+    rml:logicalSource <#AreasSource> ;
+    rr:subjectMap [
+        rr:template "http://example.com/ns/Place/{recno}";
+    ] ;
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry ;
+        rr:objectMap [
+            rr:template "http://example.com/ns/Geometry/area/{recno}"
+        ]
+    ] .
+
+<#AreasGeometryMapping> a rr:TriplesMap ;
+    rml:logicalSource <#AreasSource> ;
+    rr:subjectMap [
+        rr:template "http://example.com/ns/Geometry/area/{recno}"
+    ] ;
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT ;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] 
+.
