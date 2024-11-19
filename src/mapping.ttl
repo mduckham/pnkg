@@ -1,0 +1,219 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix ql: <http://semweb.mmlab.be/ns/ql#>.
+@prefix pn: <http://linked.data.gov.au/def/placenames/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix fnml: <http://semweb.mmlab.be/ns/fnml#> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix grel:    <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
+@prefix grelm:   <http://fno.io/grel/rmlmapping#> .
+@prefix ex: <http://example.com/ns#>.
+@base <http://example.com/ns#>.
+
+<#SA_GazetteerSites2020_DS>
+  rml:source "./examples/OGC/SA/SA_sampleGazetteerSites_GDA2020.geojson" ;
+  rml:referenceFormulation ql:JSONPath ;
+  rml:iterator "$".
+
+<#SA_GeoFeatures_GazetteerSites2020_DS>
+  rml:source "./examples/OGC/SA/SA_sampleGazetteerSites_GDA2020.geojson" ;
+  rml:referenceFormulation ql:JSONPath ;
+  rml:iterator "$.features[*]".
+
+<#GeoFeatureMapping_SA_GazetteerSites2020> a rr:TriplesMap;
+  rml:logicalSource <#SA_GazetteerSites2020_DS>;
+  rr:subjectMap [
+    rr:template "http://example.com/SA/{name}"
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate ex:type;
+    rr:objectMap [
+      rml:reference "type"
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate ex:name;
+    rr:objectMap [
+      rml:reference "name"
+    ]
+  ].
+
+<#OfficialPlaceNamesMapping> a rr:TriplesMap;
+   rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
+
+rr:subjectMap [
+    rr:template "http://example.com/SA/OfficialPlaceNames/{properties.recno}";
+    rr:class pn:OfficialPlaceName;
+  ];
+
+rr:predicateObjectMap [
+  rr:predicate dcterms:identifier;
+  rr:objectMap [
+    rml:reference "properties.recno"
+     ]
+   ];
+
+  rr:predicateObjectMap [
+    rr:predicate pn:dateGazetted;
+    rr:objectMap [
+      rml:reference "properties.date_cr_al"
+    ]
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate pn:name;
+    #rr:objectMap <#FunctionMap>;
+    rr:objectMap [
+      rml:reference "properties.name"
+    ]
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate rdfs:subClassOf;
+    rr:objectMap [
+       rr:parentTriplesMap <#PlaceNamesMapping>;
+       rr:joinCondition [
+        rr:child "properties.recno";
+        rr:parent "properties.recno"
+      ];
+    ];
+  ].
+
+<#PlaceNamesMapping> a rr:TriplesMap;
+   rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
+
+rr:subjectMap [
+    rr:template "http://example.com/SA/PlaceNames/{properties.recno}";
+    rr:class pn:PlaceNames;
+  ];
+
+    rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+     rr:objectMap [
+       rml:reference "properties.recno"
+   ]
+   ];
+  
+    rr:predicateObjectMap [
+    rr:predicate pn:wasNamedBy;
+    rr:objectMap [
+      rml:reference "properties.lga"
+    ]
+  ].
+
+
+<#GeometryMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
+
+rr:subjectMap [
+   rr:template "http://example.com/SA/Geometry/{properties.recno}";
+   rr:class pn:Geometry;
+ ];
+ 
+   rr:predicateObjectMap [
+    rr:predicate pn:asWKT;
+  #   rr:objectMap [
+  #      rml:reference "properties.geometry"
+  #  ]
+    rr:objectMap <#GeometryFunctionMap>;
+  ].
+
+<#GeoFeatureMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
+
+rr:subjectMap [
+   rr:template "http://example.com/SA/GeoFeature/{properties.recno}";
+   rr:class pn:Feature;
+ ];
+ 
+ rr:predicateObjectMap [
+  rr:predicate pn:hasGeometry;
+  rr:objectMap [
+    rr:parentTriplesMap <#GeometryMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ].
+
+<#PlaceMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
+
+rr:subjectMap [
+   rr:template "http://example.com/SA/Place/{properties.recno}";
+   rr:class pn:Place;
+ ];
+ 
+ rr:predicateObjectMap [
+  rr:predicate pn:hasGeometry;
+  rr:objectMap [
+    rr:parentTriplesMap <#GeometryMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+     rr:objectMap [
+       rml:reference "properties.recno"
+   ]
+   ];
+   
+  rr:predicateObjectMap [
+  rr:predicate pn:hasPlaceName;
+  rr:objectMap [
+    rr:parentTriplesMap <#PlaceNamesMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ].
+   
+
+<#GazetterMap> a rr:TriplesMap;
+ rml:logicalSource <#SA_GazetteerSites2020_DS>;
+
+ rr:subjectMap [
+    rr:template "http://example.com/SA/Gazetter/{name}";
+    rr:class pn:Gazetteer;
+  ].
+
+
+<#GeometryFunctionMap>
+    fnml:functionValue [
+        rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS> ;
+        rr:predicateObjectMap [
+            rr:predicate fno:executes ;
+            rr:objectMap [ rr:constant grel:toUpperCase ]
+        ] ;
+        rr:predicateObjectMap [
+            rr:predicate grel:valueParameter ;                  
+            rr:objectMap [
+                rml:reference "properties.latitude"
+            ]
+        ]
+    ] .
+
+# <#FunctionMapCordinates>
+#     fnml:functionValue [
+#         rml:logicalSource <#LogicalSource> ;
+#         rr:predicateObjectMap [
+#             rr:predicate fno:executes ;
+#             rr:objectMap [ rr:constant coordinates101:listToWkt ]
+#         ] ;
+#         rr:predicateObjectMap [
+#             rr:predicate grel:valueParameter ;                  
+#             rr:objectMap [
+#                 rml:reference "geometry.coordinates"                           
+#             ]
+#         ]
+#     ] .

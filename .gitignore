@@ -4,7 +4,9 @@ source_data_gazette
 tests
 poetry.lock
 pyproject.toml
-.gitignore
+data
+*/.DS_Store
+.DS_Store
 .DS_Store
 pyrml
 converter.py
