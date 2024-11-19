@@ -7,3 +7,5 @@ pyproject.toml
 data
 */.DS_Store
 .DS_Store
+lib/
+*.rdf
