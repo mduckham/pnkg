@@ -130,6 +130,14 @@ The relevant paths of the mapping and output files should be mentioned in the co
 https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html
 
 
+# How to use
+
+- QLD
+    - Convert SHP > JSON with `src/conversion/convert_shp_WKT.py` (modify the paths in the .py if required)
+    - Execute `java -jar ./lib/rmlmapper-7.1.2-r374-all.jar -m ./src/QLD/pts.ttl -o ./out/QLD.rdf -s turtle` (modify the path if required)
+    - The result is stored in `./out/QLD.rdf`
+
+
 ## Discussions
 
 - 18/11 - 9:00 - Warm-up  

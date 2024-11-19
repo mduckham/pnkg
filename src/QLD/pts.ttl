@@ -14,7 +14,8 @@
 @base <http://example.com/ns#>.
 
 <#SitesSource> a rml:LogicalSource ;
-    rml:source "./data/QLD/QSC_sample_Extracted_Data_20241116_091529762538-17764/QSC_sample_Place_names_gazetteer_wkt.json" ;
+    # rml:source "./data/QLD/QSC_sample_Extracted_Data_20241116_091529762538-17764/QSC_sample_Place_names_gazetteer_wkt.json" ;
+    rml:source "./data/QLD/QSC_Extracted_Data_20241116_091529762538-17764/Place_names_gazetteer_wkt.json";
     rml:referenceFormulation ql:JSONPath ;
     rml:iterator "$.[*]"
 .
@@ -113,5 +114,4 @@
     ]
 .
 
-# # java -jar /Users/alexis/Documents/04_Code/semadaten/lib/rmlmapper-7.1.2-r374-all.jar -m /Users/alexis/Documents/04_Code/semadaten/src/QLD/pts.ttl -o /Users/alexis/Documents/04_Code/semadaten/out/QLD.rdf -s turtle
-
+# java -jar /Users/alexis/Documents/04_Code/semadaten/lib/rmlmapper-7.1.2-r374-all.jar -m /Users/alexis/Documents/04_Code/semadaten/src/QLD/pts.ttl -o /Users/alexis/Documents/04_Code/semadaten/out/QLD.rdf -s turtle
