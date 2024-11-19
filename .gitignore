@@ -9,3 +9,6 @@ data
 .DS_Store
 lib/
 *.rdf
+.DS_Store
+pyrml
+converter.py

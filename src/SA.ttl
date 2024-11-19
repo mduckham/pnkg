@@ -1,158 +1,219 @@
-@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
-@prefix rr: <http://www.w3.org/ns/r2rml#> .
-@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ex:<http://example2.com/ns#>.
+@prefix rml: <http://semweb.mmlab.be/ns/rml#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix ql: <http://semweb.mmlab.be/ns/ql#>.
+@prefix pn: <http://linked.data.gov.au/def/placenames/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix fnml: <http://semweb.mmlab.be/ns/fnml#> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix grel:    <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
+@prefix grelm:   <http://fno.io/grel/rmlmapping#> .
+@prefix ex: <http://example.com/ns#>.
 @base <http://example.com/ns#>.
 
-@prefix : <http://linked.data.gov.au/def/placenames/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix ex: <http://linked.data.gov.au/dataset/placename/> .
-@prefix geo: <http://www.opengis.net/ont/geosparql#> .
-@prefix geox: <http://linked.data.gov.au/def/geox#> .
-@prefix loci: <http://linked.data.gov.au/def/loci#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prof: <http://www.w3.org/ns/dx/prof/> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix pt: <http://linked.data.gov.au/def/placetype/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix reg: <http://purl.org/linked-data/registry#> .
-@prefix schema: <https://schema.org/> .
-@prefix sf: <http://www.opengis.net/ont/sf#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix vann: <http://purl.org/vocab/vann/> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<#SA_GazetteerSites2020_DS>
+  rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson" ;
+  rml:referenceFormulation ql:JSONPath ;
+  rml:iterator "$".
 
+<#SA_GeoFeatures_GazetteerSites2020_DS>
+  rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson" ;
+  rml:referenceFormulation ql:JSONPath ;
+  rml:iterator "$.features[*]".
 
-<#PlaceNameMap> a rr:TriplesMap;
+<#GeoFeatureMapping_SA_GazetteerSites2020> a rr:TriplesMap;
+  rml:logicalSource <#SA_GazetteerSites2020_DS>;
+  rr:subjectMap [
+    rr:template "http://example.com/SA/{name}"
+  ];
 
-  rml:logicalSource [
-    rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson";
-    rml:referenceFormulation ql:JSONPath;
-    rml:iterator "$.features[*]"
-];
+  rr:predicateObjectMap [
+    rr:predicate ex:type;
+    rr:objectMap [
+      rml:reference "type"
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate ex:name;
+    rr:objectMap [
+      rml:reference "name"
+    ]
+  ].
+
+<#OfficialPlaceNamesMapping> a rr:TriplesMap;
+   rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
 
 rr:subjectMap [
-    rr:template "http://linked.data.gov.au/def/placenames/{properties.recno}";
-];
+    rr:template "http://example.com/SA/OfficialPlaceNames/{properties.recno}";
+    rr:class pn:OfficialPlaceName;
+  ];
 
 rr:predicateObjectMap [
-    rr:predicate :placeNameOf;
-    rr:objectMap [ 
-        rml:reference "properties.recno" 
-    ] 
-];
+  rr:predicate dcterms:identifier;
+  rr:objectMap [
+    rml:reference "properties.recno"
+     ]
+   ];
 
-rr:predicateObjectMap [
-    rr:predicate :hasPronounciation;
-    rr:objectMap [ 
-        rml:reference "" 
-    ] 
-];
+  rr:predicateObjectMap [
+    rr:predicate pn:dateGazetted;
+    rr:objectMap [
+      rml:reference "properties.date_cr_al"
+    ]
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate pn:name;
+    #rr:objectMap <#FunctionMap>;
+    rr:objectMap [
+      rml:reference "properties.name"
+    ]
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate rdfs:subClassOf;
+    rr:objectMap [
+       rr:parentTriplesMap <#PlaceNamesMapping>;
+       rr:joinCondition [
+        rr:child "properties.recno";
+        rr:parent "properties.recno"
+      ];
+    ];
+  ].
 
-rr:predicateObjectMap [
-    rr:predicate :isIndigenous;
-    rr:objectMap [ 
-        rml:reference ""
+<#PlaceNamesMapping> a rr:TriplesMap;
+   rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
 
-    ] 
-];
+rr:subjectMap [
+    rr:template "http://example.com/SA/PlaceNames/{properties.recno}";
+    rr:class pn:PlaceNames;
+  ];
 
-rr:predicateObjectMap [
-    rr:predicate :name;
-    rr:objectMap [ 
-        rml:reference "properties.name";
-        rr:language "en-au"
-    ] 
-];
-
-rr:predicateObjectMap [
+    rr:predicateObjectMap [
     rr:predicate dcterms:identifier;
-    rr:objectMap [ 
-        rml:reference "" 
-    ] 
-].
-
-
-# #####
-
-<#OfficialPlaceNameMap> a rr:TriplesMap;
-
-  rml:logicalSource [
-    rml:source "/Users/alexis/Documents/04_Code/semadaten/data/SA/SA_sample_Gazetteer_geojson/SA_sample_GazetteerSites_GDA94.geojson";
-    rml:referenceFormulation ql:JSONPath;
-    rml:iterator "$.features[*]"
-    ];
-
-    rr:subjectMap [
-        rr:template "http://linked.data.gov.au/def/placenames/{properties.recno}";
-    ];
-
+     rr:objectMap [
+       rml:reference "properties.recno"
+   ]
+   ];
+  
     rr:predicateObjectMap [
-        rr:predicate rdfs:member;
-        rr:objectMap [ 
-            rml:reference "properties.recno" 
-        ] 
-    ];
+    rr:predicate pn:wasNamedBy;
+    rr:objectMap [
+      rml:reference "properties.lga"
+    ]
+  ].
 
-    rr:predicateObjectMap [
-        rr:predicate loci:isMemberOf;
-        rr:objectMap [ 
-            rml:reference "" 
-        ] 
-    ];
 
-    rr:predicateObjectMap [
-        rr:predicate :status;
-        rr:objectMap [ 
-            rml:reference ":official"
-        ] 
-    ];
+<#GeometryMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
 
-    rr:predicateObjectMap [
-        rr:predicate :wasNamedBy;
-        rr:objectMap [ 
-            rml:reference "properties.lga" 
-        ] 
-    ];
+rr:subjectMap [
+   rr:template "http://example.com/SA/Geometry/{properties.recno}";
+   rr:class pn:Geometry;
+ ];
+ 
+   rr:predicateObjectMap [
+    rr:predicate pn:asWKT;
+  #   rr:objectMap [
+  #      rml:reference "properties.geometry"
+  #  ]
+    rr:objectMap <#GeometryFunctionMap>;
+  ].
 
-    rr:predicateObjectMap [
-        rr:predicate :dateGazetted;
-        rr:objectMap [ 
-            rml:reference "properties.gazdate" 
-        ] 
-    ];
+<#GeoFeatureMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
 
-    rr:predicateObjectMap [
-        rr:predicate :datePublished;
-        rr:objectMap [ 
-            rml:reference "properties.date_cr_al" 
-        ] 
-    ];
+rr:subjectMap [
+   rr:template "http://example.com/SA/GeoFeature/{properties.recno}";
+   rr:class pn:Feature;
+ ];
+ 
+ rr:predicateObjectMap [
+  rr:predicate pn:hasGeometry;
+  rr:objectMap [
+    rr:parentTriplesMap <#GeometryMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ].
 
-    rr:predicateObjectMap [
-        rr:predicate :dateReleased;
-        rr:objectMap [ 
-            rml:reference "" 
-        ] 
-    ];
+<#PlaceMapping> a rr:TriplesMap;
+ rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS>;
 
-    rr:predicateObjectMap [
-        rr:predicate :dateRetired;
-        rr:objectMap [ 
-            rml:reference "" 
-        ] 
-    ];
+rr:subjectMap [
+   rr:template "http://example.com/SA/Place/{properties.recno}";
+   rr:class pn:Place;
+ ];
+ 
+ rr:predicateObjectMap [
+  rr:predicate pn:hasGeometry;
+  rr:objectMap [
+    rr:parentTriplesMap <#GeometryMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+     rr:objectMap [
+       rml:reference "properties.recno"
+   ]
+   ];
+   
+  rr:predicateObjectMap [
+  rr:predicate pn:hasPlaceName;
+  rr:objectMap [
+    rr:parentTriplesMap <#PlaceNamesMapping>;
+    rr:joinCondition [
+      rr:child "properties.recno";
+      rr:parent "properties.recno"
+      ];
+      ];
+  ].
+   
 
-    rr:predicateObjectMap [
-        rr:predicate dcterms:identifier;
-        rr:objectMap [ 
-            rml:reference "" 
-        ] 
-    ].
+<#GazetterMap> a rr:TriplesMap;
+ rml:logicalSource <#SA_GazetteerSites2020_DS>;
 
-# java -jar {path_rmlmapper} -m {path_rules_rml_completed} -o {path_export_ttl_bash} -s turtle
+ rr:subjectMap [
+    rr:template "http://example.com/SA/Gazetter/{name}";
+    rr:class pn:Gazetteer;
+  ].
 
-# java -jar /Users/alexis/Documents/04_Code/semadaten/lib/rmlmapper-7.1.2-r374-all.jar -m /Users/alexis/Documents/04_Code/semadaten/src/SA.ttl -o /Users/alexis/Documents/04_Code/semadaten/out/test.rdf -s turtle
+
+<#GeometryFunctionMap>
+    fnml:functionValue [
+        rml:logicalSource <#SA_GeoFeatures_GazetteerSites2020_DS> ;
+        rr:predicateObjectMap [
+            rr:predicate fno:executes ;
+            rr:objectMap [ rr:constant grel:toUpperCase ]
+        ] ;
+        rr:predicateObjectMap [
+            rr:predicate grel:valueParameter ;                  
+            rr:objectMap [
+                rml:reference "properties.latitude"
+            ]
+        ]
+    ] .
+
+# <#FunctionMapCordinates>
+#     fnml:functionValue [
+#         rml:logicalSource <#LogicalSource> ;
+#         rr:predicateObjectMap [
+#             rr:predicate fno:executes ;
+#             rr:objectMap [ rr:constant coordinates101:listToWkt ]
+#         ] ;
+#         rr:predicateObjectMap [
+#             rr:predicate grel:valueParameter ;                  
+#             rr:objectMap [
+#                 rml:reference "geometry.coordinates"                           
+#             ]
+#         ]
+#     ] .
