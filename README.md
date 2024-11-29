@@ -7,6 +7,16 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 ...
 
 
+## Key resources 
+
+- Geoscience Australia placenames ontology: 
+[https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html)
+- Geoscience Australia placenames GitHub: [https://github.com/GeoscienceAustralia/Placenames-Ontology](https://github.com/GeoscienceAustralia/Placenames-Ontology)
+- Link to Place Names calogue and resources: [https://catalogue.linked.data.gov.au/resource/20](https://catalogue.linked.data.gov.au/resource/20)
+- Composite Gazetteer of Australia: [https://placenames.fsdf.org.au/](https://placenames.fsdf.org.au/)
+- Data Product Specification for the Composite Gazetteer of Australia: [Composite-Gazetteer-DPS.pdf](doc/Composite-Gazetteer-DPS.pdf)
+- Linked Data API codebase for National Composite Gazetteer of Australia: [https://github.com/GeoscienceAustralia/placenames-dataset](https://github.com/GeoscienceAustralia/placenames-dataset)
+
 ## Structure of the repository
 
 - **data**: 
