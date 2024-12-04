@@ -111,19 +111,22 @@ The relevant paths of the mapping and output files should be mentioned in the co
 
 | Abbv    | Description | Link                                                                                                                      | Data in github | Data to be downloaded | Downloaded |
 | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------- | ---------- |
+| ACT     | DP          | -                                                                                                                         |                |                       | -          |
+|         | DL          | -                                                                                                                         |                |                       |            |
+|         | API         | Only a webportal: https://apps.vertigisstudio.com/web/?app=b785e23ff7a943f1a9c7616205533333                               |                |                       |            |
 | **NSW** | DP          | https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c      | x              |                       | 15/11/2024 |
 |         | DL          | https://dcok8xuap4.execute-api.ap-southeast-2.amazonaws.com/prod/public/placenames/geonames/download                      |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       |            |
+| NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       | 29/11/2024 |
 |         | DL          | (no?)                                                                                                                     |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | **QLD** | DP          | https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=Place%20names%20gazetteer%20-%20Queensland       | x              |                       | 16/11/2024 |
 |         | DL          | Request by email                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | *SA*    | DP          | https://data.sa.gov.au/data/dataset/gazetteer                                                                             |                | x                     |            |
-|         | DL          | https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip                                                              |                |                       |            |
+|         | DL          | https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip                                                              |                |                       | 15/11/2024 |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| TAS     | DP          | No published data: https://listdata.thelist.tas.gov.au/opendata/                                                          |                |                       |            |
+| TAS     | DP          | No published data: https://listdata.thelist.tas.gov.au/opendata/                                                          |                |                       | -          |
 |         | DL          | (no)                                                                                                                      |                |                       |            |
 |         | API         | https://nre.tas.gov.au/Documents/REST%20endoint%20User%20Notes.pdf                                                        |                |                       |            |
 | **VIC** | DP          | https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp                                                                         | x              |                       | 15/11/2024 |
@@ -132,6 +135,10 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | **WA**  | DP          | https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma                                                         | x              |                       | 15/11/2024 |
 |         | DL          | (Login required)                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
+
+
+- Metadata: see [./data/README.md](./data/README.md)
+
 
 ## Ontologies
 
