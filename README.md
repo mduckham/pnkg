@@ -7,6 +7,16 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 ...
 
 
+## Key resources 
+
+- Geoscience Australia placenames ontology: 
+[https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html)
+- Geoscience Australia placenames GitHub: [https://github.com/GeoscienceAustralia/Placenames-Ontology](https://github.com/GeoscienceAustralia/Placenames-Ontology)
+- Place Names catalogue and resources: [https://catalogue.linked.data.gov.au/resource/20](https://catalogue.linked.data.gov.au/resource/20)
+- Composite Gazetteer of Australia: [https://placenames.fsdf.org.au/](https://placenames.fsdf.org.au/)
+- Data Product Specification for the Composite Gazetteer of Australia: [Composite-Gazetteer-DPS.pdf](doc/Composite-Gazetteer-DPS.pdf)
+- Linked Data API codebase for National Composite Gazetteer of Australia: [https://github.com/GeoscienceAustralia/placenames-dataset](https://github.com/GeoscienceAustralia/placenames-dataset)
+
 ## Structure of the repository
 
 - **data**: 
@@ -101,19 +111,22 @@ The relevant paths of the mapping and output files should be mentioned in the co
 
 | Abbv    | Description | Link                                                                                                                      | Data in github | Data to be downloaded | Downloaded |
 | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------- | ---------- |
+| ACT     | DP          | -                                                                                                                         |                |                       | -          |
+|         | DL          | -                                                                                                                         |                |                       |            |
+|         | API         | Only a webportal: https://apps.vertigisstudio.com/web/?app=b785e23ff7a943f1a9c7616205533333                               |                |                       |            |
 | **NSW** | DP          | https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c      | x              |                       | 15/11/2024 |
 |         | DL          | https://dcok8xuap4.execute-api.ap-southeast-2.amazonaws.com/prod/public/placenames/geonames/download                      |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       |            |
+| NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       | 29/11/2024 |
 |         | DL          | (no?)                                                                                                                     |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | **QLD** | DP          | https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=Place%20names%20gazetteer%20-%20Queensland       | x              |                       | 16/11/2024 |
 |         | DL          | Request by email                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | *SA*    | DP          | https://data.sa.gov.au/data/dataset/gazetteer                                                                             |                | x                     |            |
-|         | DL          | https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip                                                              |                |                       |            |
+|         | DL          | https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip                                                              |                |                       | 15/11/2024 |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| TAS     | DP          | No published data: https://listdata.thelist.tas.gov.au/opendata/                                                          |                |                       |            |
+| TAS     | DP          | No published data: https://listdata.thelist.tas.gov.au/opendata/                                                          |                |                       | -          |
 |         | DL          | (no)                                                                                                                      |                |                       |            |
 |         | API         | https://nre.tas.gov.au/Documents/REST%20endoint%20User%20Notes.pdf                                                        |                |                       |            |
 | **VIC** | DP          | https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp                                                                         | x              |                       | 15/11/2024 |
@@ -122,6 +135,10 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | **WA**  | DP          | https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma                                                         | x              |                       | 15/11/2024 |
 |         | DL          | (Login required)                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
+
+
+- Metadata: see [./data/README.md](./data/README.md)
+
 
 ## Ontologies
 
@@ -138,81 +155,6 @@ https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html
     - The result is stored in `./out/QLD.rdf`
 
 
-## Discussions
+# Discussions
 
-- 18/11 - 9:00 - Warm-up  
-    - Start first with pyRML 
-    - Missing data for: 
-        - Tasmania     
-        - Northern Territories     
-    - Tasks / goals: 
-        - RML mapping for one state     
-        - Download the metadata     
-        - Sample the data per state    
-        - Check if the ontology is the last one     
-    - Outcomes for OGC: 
-        - KG     
-        - Nenad will ask Rob what he expects     
-        - Day 1: 
-            - One KG for one state     
-            - Familiarise with the mapping via RDF       
-        - Day 2: 
-            - KG for the other states      
-
-- 18/11 - 11:00 – Discussions after the presentation 
-    - Pending questions  
-        - ICSM:     
-            - Any KG behind?       
-            - Looks authoritative but is it ? Or should we use data from authoritative organisms?         
-                - Point of view 1:     
-                    - If documents with Nich Carr / Simon Cox-> more likely that there is an ontology behind?     
-                    - Existing ontology on place names 
-                - Point of view 2: 
-                    -  Looks like a regular database 
-            - What is the relationship between the data from ICSM and the gazetteers by the states? 
-        - Define the ontology to be used 
-    - Ideas: 
-        - Basic metadata for each dataset / state  ->  and merge later data per state 
-            
-
-- 18/11- Discussions before lunch 
-    - Different existing ontologies: 
-        - Place names in Australia (Geosciences) 
-        - Geonames 
-        - United Nations 
-        - Europe (INSPIRE) 
-    - Future difficulties: 
-        - Mapping geometies 
-        - RML does not recognise certain formats (ex: WKT) 
-
-- 18/11 - Discussions after lunch 
-    - Choices: 
-        - Dataset: South Australia 
-        - Ontology: Place names in Australia (Geosciences) 
-
-- 18/11 - End of the day 
-    - Write one subject per class (ex: geometry will be one subject) 
-    - Code: 
-        - Better to write one header for the logical source 
-        - Most advanced versions: Ozzy / Nayomi -> push on the git 
-        - Convert the GeoJSON into WKT throught geopandas 
-
-- 19/11 - Morning warm-up 
-    - What what has been done yesterday: 
-        - Place name ontology: 
-            - Class = subject 
-        - PyRML 
-            - Missing functions but we could use a mapping with the prefixes 
-            - In Java, we can mention the functions
-        - Each class is a subject map 
-    - Missing: 
-        - Functions for geometry (conversion from GeoJSON into WKT) 
-    - Other dataset: 
-        - Whole Australia 
-    
-Issues on using place names ontology: 
-1. Dcterms:agent    how to create an instance of it, what are the requied data properties  
-2. PlaceType.   it's also abstract 
-3. How to determine if a placename is official or not  
-4. We need an agreed base URI 
-5. Mappinng Geometry coordinates
+See in `/doc/README.md`
