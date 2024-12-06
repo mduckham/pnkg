@@ -52,7 +52,13 @@ rr:subjectMap [
     rr:class dcat:DataSet;
   ];
   
-#User defined data property
+ rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+    rr:objectMap [
+      rml:reference "DatasetNumber"
+    ]
+  ] ;
+
   rr:predicateObjectMap [
     rr:predicate dcterms:title;
     rr:objectMap [
@@ -60,7 +66,6 @@ rr:subjectMap [
     ]
   ] ;
 
-#User defined data property
   rr:predicateObjectMap [
     rr:predicate dcterms:description;
     rr:objectMap [
@@ -72,6 +77,30 @@ rr:subjectMap [
     rr:predicate fsdf:hasCustodian;
     rr:objectMap [
        rr:parentTriplesMap <#MetaDataCustodianMapping> ;  
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:issued;
+    rr:objectMap [
+      rml:reference "DatasetAcquiredOn";
+      rr:datatype xsd:date
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:licence;
+    rr:objectMap [
+      rml:reference "licence";
+      rr:datatype xsd:string
+    ]
+  ];
+
+ rr:predicateObjectMap [
+    rr:predicate dcterms:publisher;
+    rr:objectMap [
+      rml:reference "Publisher";
+      rr:datatype xsd:string
     ]
   ];
 
@@ -139,15 +168,6 @@ rr:subjectMap [
 
 #User defined data property
   rr:predicateObjectMap [
-    rr:predicate gkl_gaz:dataset_acquiredon;
-    rr:objectMap [
-      rml:reference "DatasetAcquiredOn";
-      rr:datatype xsd:Date
-    ]
-  ];
-
-#User defined data property
-  rr:predicateObjectMap [
     rr:predicate gkl_gaz:dataset_updatefrequency;
     rr:objectMap [
       rml:reference "UpdateFrequency";
@@ -181,7 +201,7 @@ rr:predicateObjectMap [
   ];
   
 rr:predicateObjectMap [
-    rr:predicate vc:Kind ;
+    rr:predicate dcat:contactPoint ;
        rr:objectMap [
        rr:parentTriplesMap <#MetaDataOrganizationMapping> ;  
     ]
@@ -215,7 +235,7 @@ rr:predicateObjectMap [
  
   rr:subjectMap [
     rr:template "http://example.com/{State}/MetaData/Organization";
-    rr:class prov:Organization
+    rr:class vc:Kind
   ];
 
   rr:predicateObjectMap [
@@ -226,7 +246,6 @@ rr:predicateObjectMap [
     ]
   ];
   
-  # Mapping the email as an object property
   rr:predicateObjectMap [
     rr:predicate vc:hasEmail ; 
     rr:objectMap [
@@ -276,7 +295,7 @@ rr:predicateObjectMap [
     ]
    ].
 
-############################################################################################
+#############################################################################
 ##################### Geometry Mapping ######################################
 <#GeometryMapping> a rr:TriplesMap;
  rml:logicalSource <#SA_SitesSource>;
@@ -426,7 +445,7 @@ rr:predicateObjectMap [
 ];
 
 rr:predicateObjectMap [
-  rr:predicate gkl_gaz:hasMetaData ;
+  rr:predicate rdfs:isMemberOf ;
    rr:objectMap [
     rr:parentTriplesMap <#MetaDataMapping>;
     rr:joinCondition [
