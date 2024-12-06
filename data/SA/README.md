@@ -1,0 +1,10 @@
+ - To download:
+    - SA: 
+        - Option 1:
+            - Use the link `https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
+            - Save in `./data/SA`
+        - Option 2: with `wget`
+            - Install the command wget: 
+                -`brew install wget`
+            - Download the data:
+                - `wget -P ./data/SA https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
