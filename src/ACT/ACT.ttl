@@ -11,13 +11,17 @@
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix loci: <http://linked.data.gov.au/def/loci#> .
 @prefix gkl_gaz: <http://example.com/ns/gazetteer#> .
+# @prefix fnml: <http://semweb.mmlab.be/ns/fnml#> .
+# @prefix fno:  <https://w3id.org/function/ontology#> .
+# @prefix grel:    <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
 @base <http://example.com/ns#>.
 
 <#SitesSource> a rml:LogicalSource ;
     rml:source "./data/ACT/ACT_241206.csv" ;
-    rml:referenceFormulation ql:csv ;
+    rml:referenceFormulation ql:CSV ;
+    rml:iterator "$"
 
-    # rml:source "./data/ACT/ACT_241206.csv" ;
+    # rml:source "./data/ACT/ACT_241206.json" ;
     # rml:referenceFormulation ql:JSONPath ;
     # rml:iterator "$.[*]"
 .
@@ -86,10 +90,10 @@
 
     rr:predicateObjectMap [
         rr:predicate loci:isMemberOf ;
-        rr:objectMap[
-            rr:IRI gkl_gaz:Australian_Capital_Territory;
-        ]
-    ] ;
+        rr:objectMap [
+            rr:constant gkl_gaz:Australian_Capital_Territory;
+            ]
+    ];
 
     rr:predicateObjectMap [
         rr:predicate pa:dateGazetted ;
@@ -114,7 +118,7 @@
     rr:predicateObjectMap [
         rr:predicate pa:wasNamedBy ;
         rr:objectMap [
-            rr:IRI gkl_gaz:Office_of_the_Surveyor_General_and_Land_Information;
+            rr:constant gkl_gaz:Office_of_the_Surveyor_General_and_Land_Information;
         ]
     ]
 .
