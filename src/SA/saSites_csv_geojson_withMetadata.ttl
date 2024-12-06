@@ -34,21 +34,19 @@
 ## CSV with Geometry in WKT
 <#SA_SitesSource> a rml:LogicalSource ;
     rml:source "./examples/OGC/SA/sites.csv" ;
-    rml:referenceFormulation ql:CSV ;
-    rml:iterator "$" .
+    rml:referenceFormulation ql:csv .
 
 ## CSV with metadata for SA
 <#SA_SitesMetaDataSource> a rml:LogicalSource ;
     rml:source "./examples/OGC/meta_data_SA.csv" ;
-    rml:referenceFormulation ql:CSV ;
-    rml:iterator "$" .
+    rml:referenceFormulation ql:csv .
 
 ################################## MetaData Mapping ##################################
 <#MetaDataMapping> a rr:TriplesMap;
    rml:logicalSource <#SA_SitesMetaDataSource>;
 
 rr:subjectMap [
-    rr:template "http://example.com/{State}/MetaData/ds_{DatasetNumber}";
+    rr:template "http://example.com/SA/MetaData/ds_{DatasetNumber}";
     rr:class dcat:DataSet;
   ];
   
@@ -60,14 +58,14 @@ rr:subjectMap [
   ] ;
 
   rr:predicateObjectMap [
-    rr:predicate dcterms:title;
+    rr:predicate gkl_gaz:MetaDataTitle;
     rr:objectMap [
       rml:reference "Title"
     ]
   ] ;
 
   rr:predicateObjectMap [
-    rr:predicate dcterms:description;
+    rr:predicate gkl_gaz:MetaDataDescription;
     rr:objectMap [
       rml:reference "Description"
     ]
@@ -106,7 +104,7 @@ rr:subjectMap [
 
 #User defined data property
   rr:predicateObjectMap [
-    rr:predicate gkl_gaz:meta_data_usage;
+    rr:predicate gkl_gaz:MetaDataUsage;
     rr:objectMap [
       rml:reference "Usage"
     ]
@@ -210,7 +208,7 @@ rr:predicateObjectMap [
 <#MetaDataCustodianMapping>
   rml:logicalSource <#SA_SitesMetaDataSource>;
  rr:subjectMap [
-    rr:template "http://example.com/{State}/MetaData/Custodian";
+    rr:template "http://example.com/SA/MetaData/Custodian";
     rr:class fsdf:Agency
   ];
 
@@ -236,6 +234,8 @@ rr:predicateObjectMap [
   rr:subjectMap [
     rr:template "http://example.com/{State}/MetaData/Organization";
     rr:class vc:Kind
+    rr:template "http://example.com/SA/MetaData/Organization";
+    rr:class prov:Organization
   ];
 
   rr:predicateObjectMap [
@@ -266,7 +266,7 @@ rr:predicateObjectMap [
   rml:logicalSource <#SA_SitesMetaDataSource>;
  
   rr:subjectMap [
-    rr:template "http://example.com/{State}/MetaData/Quality/Completeness";
+    rr:template "http://example.com/SA/MetaData/Quality/Completeness";
     rr:class dqv:QualityMeasurement
   ];
   
@@ -283,7 +283,7 @@ rr:predicateObjectMap [
   rml:logicalSource <#SA_SitesMetaDataSource>;
  
   rr:subjectMap [
-    rr:template "http://example.com/{State}/MetaData/Quality/PositionalAccuracy";
+    rr:template "http://example.com/SA/MetaData/Quality/PositionalAccuracy";
     rr:class dqv:QualityMeasurement
   ];
   
@@ -446,6 +446,7 @@ rr:predicateObjectMap [
 
 rr:predicateObjectMap [
   rr:predicate rdfs:isMemberOf ;
+  rr:predicate gkl_gaz:hasMetaDataProvenance ;
    rr:objectMap [
     rr:parentTriplesMap <#MetaDataMapping>;
     rr:joinCondition [
