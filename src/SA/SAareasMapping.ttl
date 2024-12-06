@@ -36,7 +36,8 @@
 <#AreasGeometryMapping> a rr:TriplesMap ;
     rml:logicalSource <#AreasSource> ;
     rr:subjectMap [
-        rr:template "http://example.com/ns/Geometry/area/{recno}"
+        rr:template "http://example.com/ns/Geometry/area/{recno}" ;
+        rr:class geo:Geometry ;
     ] ;
 
     rr:predicateObjectMap [

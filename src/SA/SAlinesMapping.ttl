@@ -34,7 +34,8 @@
 <#LinesGeometryMapping> a rr:TriplesMap ;
     rml:logicalSource <#LinesSource> ;
     rr:subjectMap [
-        rr:template "http://example.com/ns/Geometry/line/{recno}"
+        rr:template "http://example.com/ns/Geometry/line/{recno}";
+        rr:class geo:Geometry ;
     ] ;
 
     rr:predicateObjectMap [
