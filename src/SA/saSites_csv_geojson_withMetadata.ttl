@@ -271,7 +271,7 @@ rr:predicateObjectMap [
   ];
   
   rr:predicateObjectMap [
-  rr:predicate dqv:value;
+  rr:predicate dcterms:description;
   rr:objectMap [
       rml:reference "DataQualityCompleteness";
       rr:datatype xsd:string
@@ -288,7 +288,7 @@ rr:predicateObjectMap [
   ];
   
   rr:predicateObjectMap [
-  rr:predicate dqv:value;
+  rr:predicate dcterms:description;
   rr:objectMap [
       rml:reference "DataQualityPositionalAccuracy";
       rr:datatype xsd:string
