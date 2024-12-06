@@ -153,8 +153,17 @@ https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html
     - Convert SHP > JSON with `src/conversion/convert_shp_WKT.py` (modify the paths in the .py if required)
     - Execute `java -jar ./lib/rmlmapper-7.1.2-r374-all.jar -m ./src/QLD/pts.ttl -o ./out/QLD.rdf -s turtle` (modify the path if required)
     - The result is stored in `./out/QLD.rdf`
+- ACT
+    - Conversion gpkg to csv: `python3 ./src/conversion/extract_from_icsm.py`
+    - Creation of the output folder: `mkdir ./out/ACT`
+    - Use of rmlmapper: `java -jar ./lib/rmlmapper-7.1.2-r374-all.jar -m ./src/ACT/ACT.ttl -o ./out/ACT/ACT.rdf`
 
 
 # Discussions
 
 See in `/doc/README.md`
+
+# Potential problems
+
+- Problem for `rr:IRI`
+    - Prefer to use `rr:constant`
