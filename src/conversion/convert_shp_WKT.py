@@ -15,13 +15,15 @@ WKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file
 sys.path.append(WKSPACE)
 
 #---------------------------------
-path_shp = "./data/QLD/QSC_sample_Extracted_Data_20241116_091529762538-17764/QSC_sample_Place_names_gazetteer.shp"
+path_shp = "./data/QLD/QSC_Extracted_Data_20241116_091529762538-17764/Place_names_gazetteer.shp"
+
+# path_shp = "./data/QLD/QSC_sample_Extracted_Data_20241116_091529762538-17764/QSC_sample_Place_names_gazetteer.shp"
 
 path_shp = os.path.join(
     WKSPACE,
     path_shp,
 )
-path_export = path_shp.replace(".shp", "_wkt.json")
+path_export = path_shp.replace(".shp", "_wkt.csv")
 
 ################################################################################
 
@@ -57,7 +59,7 @@ def convert_shp_to(
 
 if __name__ == "__main__":
     convert_shp_to(
-        format="json",
+        format="csv",
         path_import=path_shp,
         path_export=path_export,
     )
