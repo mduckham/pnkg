@@ -25,10 +25,10 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
     - Documentation, examples, 
 - **lib**: 
     - External libraries
-- **out**: 
-    - Any output
+- **KnowldgeGraph**: 
+    - Links for downlodaing ttl files and knowldge graph 
 - **src**: 
-    - Code
+    - Code and RML mapping scripts
 
 ## Installation
 ### RML Processors
