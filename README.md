@@ -25,7 +25,7 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
     - Documentation, examples, 
 - **lib**: 
     - External libraries
-- **KnowldgeGraph**: 
+- **KnowledgeGraph**: 
     - Links for downlodaing ttl files and knowledge graph 
 - **src**: 
     - Code and RML mapping scripts
