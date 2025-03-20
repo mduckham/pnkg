@@ -126,7 +126,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
 |         | DL          | (no)                                                                                                                      |                |                       |            |
 |         | API         | https://nre.tas.gov.au/Documents/REST%20endoint%20User%20Notes.pdf                                                        |                |                       |            |
 | **VIC** | DP          | [Download official VIC place names gazetteer](https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp)                          | [Sites.csv](data/VIC/VICSites.csv); [Roads.csv](data/VIC/VICRoads.csv)   | 01/03/2025|
-| **WA**  | DP          | https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma                                                         | x              |                       | 15/11/2024 |
+| **WA**  | DP          | [Download official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)                                                         | x              |                       | 15/11/2024 |
 |         |             |                                                                                                                           |                |                       |            |
 
 
