@@ -121,8 +121,6 @@ The relevant paths of the mapping and output files should be mentioned in the co
 |         | DL          | (no?)                                                                                                                     |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | **QLD** | DP          | [Download official QLD place names gazetteer](https://www.qld.gov.au/environment/land/title/place-names/search)                                                          | [QLD.csv](data/QLD/QLD.csv)    |         20/03/2025 |
-|         | DL          | Request by email                                                                                                          |                |                       |            |
-|         | API         | (Not checked)                                                                                                             |                |                       |            |
 | *SA*    | DP          | https://data.sa.gov.au/data/dataset/gazetteer                                                                             |                | x                     |            |
 |         | DL          | https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip                                                              |                |                       | 15/11/2024 |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
