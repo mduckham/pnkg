@@ -68,21 +68,8 @@ The relevant paths of the mapping and output files should be mentioned in the co
 
 ## Source datasets
 
-- Data 
-    - Directly available in the git:
-        - NSW, QLD, SA, VIC, WA
-    - To download:
-        - SA: 
-            - Option 1:
-                - Use the link `https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
-                - Save in `./data/SA`
-            - Option 2: with `wget`
-                - Install the command wget: 
-                    -`brew install wget`
-                - Download the data:
-                    - `wget -P ./data/SA https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
-    - Tables of information can be under the formats: .csv, .dbf
-
+- Gazetters directly available in the repository for ACT, NSW, NT, QLD,, TAS, VIC, and WA.
+- For SA only external link available to download oficail place names gazatteer.
 - Source: 
     - From authoritative organsations (state) only and not from other non official provider
     - Informal resources: [ICSM](https://www.icsm.gov.au/individual-state-and-territory-gazetteers)
