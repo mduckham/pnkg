@@ -109,9 +109,9 @@ The relevant paths of the mapping and output files should be mentioned in the co
 		- *Abbv*: the compressed data is heavy to be shares with the github. As an alternative, we can download the data with `wget`. Regarding reproducibility aspects, this data might change throughout time.
 		- Abbv: data not available.
 
-| Jursdiction    | Description | Download Link                                                                                                      | Data in GitHub |  Last Updated |
+| Jursdiction    | Metadata | Download Link                                                                                                      | Data in GitHub |  Last Updated |
 | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- |  ----------   |
-| **ACT**    | DP          | [Download ACT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                  |   [ACT.csv](data/ACT/ACT.csv)  |  06/12/24           |
+| **ACT**    | [ACT Metadata](https://www.data.act.gov.au/dataset/ACT-Feature-Names/kpm6-igvw/about_data)          | [Download ACT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                  |   [ACT.csv](data/ACT/ACT.csv)  |  06/12/24           |
 | **NSW** | DP          | [Download official NSW place names gazetteer](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c) | [NSW.csv](data/NSW/NSW.csv)        | 16/03/25 |
 | **NT**      | DP          | [Download NT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                      |  [NT.csv](data/NT/NT.csv)  |  24/11/24 |
 | **QLD** | DP          | [Download official QLD place names gazetteer](https://www.qld.gov.au/environment/land/title/place-names/search)           | [QLD.csv](data/QLD/QLD.csv)|  20/03/25 |
