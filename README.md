@@ -4,8 +4,6 @@ Geographic Knowledge Lab (GKL) semantic spatial data enrichment
 Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-november-2024-ogc-metadata-code-sprint/)
 
 ## Checklist
-...
-
 
 ## Key resources 
 
@@ -91,23 +89,11 @@ The relevant paths of the mapping and output files should be mentioned in the co
                     -`brew install wget`
                 - Download the data:
                     - `wget -P ./data/SA https://www.dptiapps.com.au/dataportal/Gazetteer_geojson.zip`
-    - Missing data:
-        - NT, TAS
     - Tables of information can be under the formats: .csv, .dbf
 
 - Source: 
-    - From authoritative organisms (state) only and not from other non official provider
+    - From authoritative organsations (state) only and not from other non official provider
     - Informal resources: [ICSM](https://www.icsm.gov.au/individual-state-and-territory-gazetteers)
-
-
-- Legend for the table:
-	- DP: download page
-	- DL: direct link to the dataset
-	- API: URL of the API
-	- Abbreviations:
-		- **Abbv**: uploaded to the github (compressed file is <5-6 Mo, unzipped is around 25Mo).
-		- *Abbv*: the compressed data is heavy to be shares with the github. As an alternative, we can download the data with `wget`. Regarding reproducibility aspects, this data might change throughout time.
-		- Abbv: data not available.
 
 | Jursdiction | Metadata |                                                                Download Link                                             | Data in GitHub | Last Updated |
 | :-------: | ----------- | ------------------------------------------------------------------------------------------------------------------------- | :--------------: | :------------:|
@@ -119,10 +105,6 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | **TAS** | [Web Link](https://data.thelist.tas.gov.au/datagn/srv/eng/main.home?uuid=d193cd7a-d93a-4ca8-a0a3-670929ad247a)         | [TAS place names in the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                     |  [TAS.csv](data/TAS/TAS.csv) | 24/11/24 |
 | **VIC** | [Web Link](https://metashare.maps.vic.gov.au/geonetwork/srv/eng/catalog.search#/metadata/b236fd06-a7fc-5ced-8b98-1f022a329b11)          | [Official VIC place names gazetteer](https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp)   | [Sites.csv](data/VIC/VICSites.csv); [Roads.csv](data/VIC/VICRoads.csv)   | 01/03/25 |
 | **WA**  | [Web Link](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma) | [Official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 24/11/24 |
-
-
-
-- Metadata: see [./data/README.md](./data/README.md)
 
 
 ## Ontologies
