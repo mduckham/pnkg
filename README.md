@@ -1,4 +1,4 @@
-  # semadaten: semantic data enrichment
+  # Semadaten: semantic data enrichment
 
 Geographic Knowledge Lab (GKL) semantic spatial data enrichment
 Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-november-2024-ogc-metadata-code-sprint/)
