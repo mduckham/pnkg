@@ -112,13 +112,13 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | Jursdiction    | Description | Download Link                                                                                                      | Data in GitHub |  Last Updated |
 | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- |  ----------   |
 | **ACT**    | DP          | [Download ACT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                  |   [ACT.csv](data/ACT/ACT.csv)  |  06/12/24           |
-| **NSW** | DP          | [Download official NSW place names gazetteer](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c) | [NSW.csv](data/NSW/NSW.csv)        | 16/03/2025 |
-| **NT**      | DP          | [Download NT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                      |  [NT.csv](data/NT/NT.csv)  |  24/11/2024 |
-| **QLD** | DP          | [Download official QLD place names gazetteer](https://www.qld.gov.au/environment/land/title/place-names/search)           | [QLD.csv](data/QLD/QLD.csv)|  20/03/2025 |
-| **SA**    | DP          | [Download official SA place names gazertteer](https://data.sa.gov.au/data/dataset/gazetteer)                            | [Sites.csv](https://drive.google.com/file/d/1aZxHk-g5_0KRaAOG9w6PuUEHTO2c3QG1/view?usp=sharing); [Lines.csv](https://drive.google.com/file/d/19QUnO59D8vHqY7HME0v3F8kzmMoj4gBl/view?usp=sharing); [Areas](https://drive.google.com/file/d/1Yrc9v_O6KvdtiW75PUFzfZD6bERJ4pxi/view?usp=sharing)              | 17/03/2025           |
-| **TAS**     | DP          | [Download TAS place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                     |  [TAS.csv](data/TAS/TAS.csv) |   24/11/2024      |
-| **VIC** | DP          | [Download official VIC place names gazetteer](https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp)                          | [Sites.csv](data/VIC/VICSites.csv); [Roads.csv](data/VIC/VICRoads.csv)   | 01/03/2025|
-| **WA**  | DP          | [Download official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 24/11/2024 |
+| **NSW** | DP          | [Download official NSW place names gazetteer](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c) | [NSW.csv](data/NSW/NSW.csv)        | 16/03/25 |
+| **NT**      | DP          | [Download NT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                      |  [NT.csv](data/NT/NT.csv)  |  24/11/24 |
+| **QLD** | DP          | [Download official QLD place names gazetteer](https://www.qld.gov.au/environment/land/title/place-names/search)           | [QLD.csv](data/QLD/QLD.csv)|  20/03/25 |
+| **SA**    | DP          | [Download official SA place names gazertteer](https://data.sa.gov.au/data/dataset/gazetteer)                            | [Sites.csv](https://drive.google.com/file/d/1aZxHk-g5_0KRaAOG9w6PuUEHTO2c3QG1/view?usp=sharing); [Lines.csv](https://drive.google.com/file/d/19QUnO59D8vHqY7HME0v3F8kzmMoj4gBl/view?usp=sharing); [Areas](https://drive.google.com/file/d/1Yrc9v_O6KvdtiW75PUFzfZD6bERJ4pxi/view?usp=sharing)              | 17/03/25           |
+| **TAS**     | DP          | [Download TAS place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                     |  [TAS.csv](data/TAS/TAS.csv) |   24/11/24      |
+| **VIC** | DP          | [Download official VIC place names gazetteer](https://maps.land.vic.gov.au/lassi/VicnamesUI.jsp)                          | [Sites.csv](data/VIC/VICSites.csv); [Roads.csv](data/VIC/VICRoads.csv)   | 01/03/25|
+| **WA**  | DP          | [Download official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 24/11/24 |
 
 
 
