@@ -14,7 +14,7 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 
 ## Repository structure
 
-- **data**: Official gazetters and data sets mapped and linked in the Place Names Knowldge Graph (PNKG).
+- **data**: Official gazetters and place names data linked and enriched in the Place Names Knowldge Graph (PNKG).
 - **doc**: Documentation and examples. 
 - **lib**: External libraries.
 - **pnkg**: Documetation and link for downlodaing the PNKG. 
