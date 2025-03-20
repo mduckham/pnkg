@@ -110,7 +110,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
 		- Abbv: data not available.
 
 | Jursdiction | Metadata | Download Link                                                                                                            | Data in GitHub | Last Updated |
-| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | ---------- |
+| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------ |
 | **ACT**    | [Web Link](https://www.data.act.gov.au/dataset/ACT-Feature-Names/kpm6-igvw/about_data)   | [Download ACT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                  |   [ACT.csv](data/ACT/ACT.csv)  |  06/12/24  |
 | **NSW** | [Web Link](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw)         | [Download official NSW place names gazetteer](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c) | [NSW.csv](data/NSW/NSW.csv)        | 16/03/25 |
 | **NT**      | [Web Link](https://www.ntlis.nt.gov.au/metadata/export_data?metadata_id=2DBCB7711FB306B6E040CD9B0F274EFE&type=html)         | [Download NT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                      |  [NT.csv](data/NT/NT.csv)  |  24/11/24 |
