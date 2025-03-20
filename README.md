@@ -110,10 +110,8 @@ The relevant paths of the mapping and output files should be mentioned in the co
 		- Abbv: data not available.
 
 | Jursdiction    | Description | Download Link                                                                                                      | Data in GitHub |  Last Updated |
-| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- |  ---------- |
-| ACT     | DP          | -                                                                                                                         |                |                       | -          |
-|         | DL          | -                                                                                                                         |                |                       |            |
-|         | API         | Only a webportal: https://apps.vertigisstudio.com/web/?app=b785e23ff7a943f1a9c7616205533333                               |                |                       |            |
+| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- |  ----------   |
+| **ACT**    | DP          | [Download ACT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                  |   [ACT.csv](data/ACT/ACT.csv)  |  06/12/24           |
 | **NSW** | DP          | [Download official NSW place names gazetteer](https://data.nsw.gov.au/data/dataset/geographical-name-register-of-nsw/resource/af4e95e2-0dda-44c4-9324-4a025169545c) | [NSW.csv](data/NSW/NSW.csv)        | 16/03/2025 |
 | **NT**      | DP          | [Download NT place names from the Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)                      |  [NT.csv](data/NT/NT.csv)  |  24/11/2024 |
 | **QLD** | DP          | [Download official QLD place names gazetteer](https://www.qld.gov.au/environment/land/title/place-names/search)           | [QLD.csv](data/QLD/QLD.csv)|  20/03/2025 |
