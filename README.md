@@ -109,8 +109,8 @@ The relevant paths of the mapping and output files should be mentioned in the co
 		- *Abbv*: the compressed data is heavy to be shares with the github. As an alternative, we can download the data with `wget`. Regarding reproducibility aspects, this data might change throughout time.
 		- Abbv: data not available.
 
-| Abbv    | Description | Link                                                                                                                      | Data in github | Data to be downloaded | Downloaded |
-| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------- | ---------- |
+| Jursdiction    | Description | Link                                                                                                                      | Data in github |  Downloaded |
+| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- | -------------- |  ---------- |
 | ACT     | DP          | -                                                                                                                         |                |                       | -          |
 |         | DL          | -                                                                                                                         |                |                       |            |
 |         | API         | Only a webportal: https://apps.vertigisstudio.com/web/?app=b785e23ff7a943f1a9c7616205533333                               |                |                       |            |
@@ -120,7 +120,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       | 29/11/2024 |
 |         | DL          | (no?)                                                                                                                     |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| **QLD** | DP          | https://www.qld.gov.au/environment/land/title/place-names/search                                                          | [QLD.csv](data/QLD/QLD.csv)              |                       | 16/11/2024 |
+| **QLD** | DP          | https://www.qld.gov.au/environment/land/title/place-names/search                                                          | [QLD.csv](data/QLD/QLD.csv)    |         16/11/2024 |
 |         | DL          | Request by email                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | *SA*    | DP          | https://data.sa.gov.au/data/dataset/gazetteer                                                                             |                | x                     |            |
