@@ -120,7 +120,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | NT      | DP          | https://data.nt.gov.au/dataset/?q=names&sort=score+desc%2C+metadata_modified+desc                                         |                |                       | 29/11/2024 |
 |         | DL          | (no?)                                                                                                                     |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
-| **QLD** | DP          | https://qldspatial.information.qld.gov.au/catalogue/custom/search.page?q=Place%20names%20gazetteer%20-%20Queensland       | x              |                       | 16/11/2024 |
+| **QLD** | DP          | https://www.qld.gov.au/environment/land/title/place-names/search                                                          | CSV File       |                       | 16/11/2024 |
 |         | DL          | Request by email                                                                                                          |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | *SA*    | DP          | https://data.sa.gov.au/data/dataset/gazetteer                                                                             |                | x                     |            |
@@ -133,8 +133,8 @@ The relevant paths of the mapping and output files should be mentioned in the co
 |         | DL          | (no)                                                                                                                      |                |                       |            |
 |         | API         | (Not checked)                                                                                                             |                |                       |            |
 | **WA**  | DP          | https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma                                                         | x              |                       | 15/11/2024 |
-|         | DL          | (Login required)                                                                                                          |                |                       |            |
-|         | API         | (Not checked)                                                                                                             |                |                       |            |
+|         |             |                                                                                                                           |                |                       |            |
+
 
 
 - Metadata: see [./data/README.md](./data/README.md)
