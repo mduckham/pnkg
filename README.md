@@ -12,18 +12,13 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 - [Data Product Specification for the Composite Gazetteer of Australia](doc/Composite-Gazetteer-DPS.pdf)
 - [Linked Data API codebase for National Composite Gazetteer of Australi](https://github.com/GeoscienceAustralia/placenames-dataset)
 
-## Structure of the repository
+## Repository structure
 
-- **data**: 
-    - Original datasets. This folder is ignored in .gitignore to avoid updates of large datasets. To update data, please, manually do it through the web interface.
-- **doc**: 
-    - Documentation, examples, 
-- **lib**: 
-    - External libraries
-- **KnowledgeGraph**: 
-    - Links for downlodaing ttl files and knowledge graph 
-- **src**: 
-    - Code and RML mapping scripts
+- **data**: Official gazetters and data sets mapped and linked in the Place Names Knowldge Graph (PNKG).
+- **doc**: Documentation and examples. 
+- **lib**: External libraries.
+- **pnkg**: Documetation and link for downlodaing the PNKG. 
+- **src**: RML mapping scripts and code.
 
 ## Installation
 ### RML Processors
