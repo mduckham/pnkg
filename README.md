@@ -66,7 +66,7 @@ Example:-
 The relevant paths of the mapping and output files should be mentioned in the command. 
 <br>
 
-## Source datasets
+## Data
 
 - Gazetters directly available in the repository for ACT, NSW, NT, QLD,, TAS, VIC, and WA.
 - For SA only external link available to download oficail place names gazatteer.
@@ -86,12 +86,9 @@ The relevant paths of the mapping and output files should be mentioned in the co
 | **WA**  | [Web Link](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma) | [Official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 24/11/24 |
 
 
-## Ontologies
+## Ontology
 
-### Geoscience Australia placenames ontology
-
-https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html
-
+### [Geoscience Australia Place Name ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html)
 
 # How to use
 
