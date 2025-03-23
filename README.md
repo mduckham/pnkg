@@ -22,10 +22,10 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 
 ## Data
 
-- Gazetters directly available in the repository for ACT, NSW, NT, QLD,, TAS, VIC, and WA.
-- For SA only external link available to download oficail place names gazatteer.
-- Source: 
-    - From authoritative organisations (state) only and not from other non official provider
+- Gazetters directly available in the repository for ACT, NSW, NT, QLD, TAS, VIC, and WA.
+- For SA only external link available to download official place names gazatteer due to large file size.
+- Data downloaded from authoritative organisations (state) for NSW, QLD, SA< VIC, and WA.
+- For ACT, NT, and TAS place names gazetters were downloaded from the Composite Gazetteer of Australia. 
     - Informal resources: [ICSM](https://www.icsm.gov.au/individual-state-and-territory-gazetteers)
 
 | Jursdiction | Metadata |                                                                Download Link                                             | Data in GitHub | Last Updated |
