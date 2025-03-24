@@ -6,7 +6,7 @@
 * Python 3
 * Development environments (IDEs) such as Visual Studio Code(VS Code) 
 #### Steps 
-* Clone the application from the GitHub repository (https://github.com/anuzzolese/pyrml) <br>
+* Clone the application from the [PyRML GitHub repository](https://github.com/anuzzolese/pyrml) <br>
    Alternatively, it is possible to install the pyRML package directly from GitHub in the following way: 
 pip install git+https://github.com/anuzzolese/pyrml 
 ##### Command to execute the mapping file
