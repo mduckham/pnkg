@@ -57,7 +57,7 @@ The below image shows the snapshot of the classes, Object Property (OP), and Dat
 ```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
 The relevant paths of the mapping and output files should be mentioned in the command. 
 
-# How to use
+## How to use
 
 - QLD
     - Convert SHP > JSON with `src/conversion/convert_shp_WKT.py` (modify the paths in the .py if required)
@@ -68,7 +68,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
     - Creation of the output folder: `mkdir ./out/ACT`
     - Use of rmlmapper: `java -jar ./lib/rmlmapper-7.1.2-r374-all.jar -m ./src/ACT/ACT.ttl -o ./out/ACT/ACT.nt`
 
-# Recommendations
+## Recommendations
 
-# Limitations 
+## Limitations 
 
