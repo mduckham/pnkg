@@ -1,4 +1,4 @@
-  # Semadaten: semantic data enrichment
+  # semadaten: semantic data enrichment
 
 This is the repository of source codes and datasets for a transparent and reproducible semantic data enrichment of foundation spatial data. The repository is developed and organised by Geographic Knowledge Lab (GKL). 
 
