@@ -26,7 +26,7 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 - For SA only external link available to download official place names gazatteer due to large file size.
 - Data downloaded from authoritative organisations (state) for NSW, QLD, SA< VIC, and WA.
 - For ACT, NT, and TAS place names gazetters were downloaded from the national database, the Composite Gazetteer of Australia. 
-- The list of authoritative and non-authoritative organisations for place name gazetters resources is avaialble on the [Intergovernmental Committee on Surveying and Mapping (ICSM) website](https://www.icsm.gov.au/individual-state-and-territory-gazetteers).
+- The list of authoritative and non-authoritative organisations for place name gazetters is available on the [Intergovernmental Committee on Surveying and Mapping (ICSM) website](https://www.icsm.gov.au/individual-state-and-territory-gazetteers).
 
 | Jursdiction | Metadata |                                                                Download Link                                             | Data in GitHub | Last Updated |
 | :-------: | ----------- | ------------------------------------------------------------------------------------------------------------------------- | :--------------: | :------------:|
