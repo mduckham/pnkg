@@ -68,12 +68,7 @@ The relevant paths of the mapping and output files should be mentioned in the co
     - Creation of the output folder: `mkdir ./out/ACT`
     - Use of rmlmapper: `java -jar ./lib/rmlmapper-7.1.2-r374-all.jar -m ./src/ACT/ACT.ttl -o ./out/ACT/ACT.nt`
 
+# Recommendations
 
-# Discussions
+# Limitations 
 
-See in `/doc/README.md`
-
-# Potential problems
-
-- Problem for `rr:IRI`
-    - Prefer to use `rr:constant`
