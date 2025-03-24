@@ -1,7 +1,7 @@
 # Data 
 This folder includes place name gazetteers for each state and territory in Australia. Please navigate to each folder to download or access gazettteer data. 
 
-# Metadata for the gazetteers
+### Metadata for the gazetteers
 
 | State | Webpage for metadata                                                                                                       | Direct download                                                                                                                                                                                                                                                                             |
 | ----- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
