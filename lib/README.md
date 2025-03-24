@@ -21,7 +21,7 @@ Example: -
 * Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
 * Apache Maven is required to be installed if you still need to install it. It can be done using Homebrew  (https://macpaw.com/how-to/install-maven-on-mac) .<br>
 #### Steps 
-* Clone the application from the GitHub repository (https://github.com/kg-construct/BURP )
+* Clone the application from the [BURP GitHub repository](https://github.com/kg-construct/BURP)
 * To build the project and copy its dependencies, execute <br>
 ```mvn package``` <br>
 ```mvn dependency:copy-dependencies  ``` <br>
