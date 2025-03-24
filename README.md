@@ -5,12 +5,13 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 
 ## Key resources 
 
-- [Geoscience Australia Place Names Ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html)
-- [Geoscience Australia Place-Names GitHub repository](https://github.com/GeoscienceAustralia/Placenames-Ontology)
-- [Place Names catalogue and resources](https://catalogue.linked.data.gov.au/resource/20)
-- [Composite Gazetteer of Australia](https://placenames.fsdf.org.au/)
-- [Data Product Specification for the Composite Gazetteer of Australia](doc/Composite-Gazetteer-DPS.pdf)
-- [Linked Data API codebase for National Composite Gazetteer of Australi](https://github.com/GeoscienceAustralia/placenames-dataset)
+- [Geoscience Australia Place Names Ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html);
+- [Geoscience Australia Place-Names GitHub repository](https://github.com/GeoscienceAustralia/Placenames-Ontology);
+- [Place Names catalogue and resources](https://catalogue.linked.data.gov.au/resource/20);
+- [Composite Gazetteer of Australia](https://placenames.fsdf.org.au/);
+- [Data Product Specification for the Composite Gazetteer of Australia](doc/Composite-Gazetteer-DPS.pdf);
+- [Linked Data API codebase for National Composite Gazetteer of Australi](https://github.com/GeoscienceAustralia/placenames-dataset); and
+- [RML tools](https://rml.io/tools/);
 
 ## Repository structure
 
