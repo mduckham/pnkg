@@ -41,9 +41,11 @@ Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-novembe
 | **WA**  | [Web Link](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma) | [Official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 24/11/24 |
 
 
-## Ontology
+## Place Name Ontology
+The below image shows the snapshot of the classes, Object Property (OP), and Data Property (DP) of the [Geoscience Australia Place Name ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html). Defiend relatiosn in the ontology were used as RML mapping rules for creation of PNKG. 
 
-### [Geoscience Australia Place Name ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html)
+
+ 
 
 ## Installation
 ###  RMLmapper java 
