@@ -1,7 +1,6 @@
   # Semadaten: semantic data enrichment
 
-Geographic Knowledge Lab (GKL) semantic spatial data enrichment
-Related to [OGC Code Sprint Nov 2024](https://www.ogc.org/ogc-events/the-november-2024-ogc-metadata-code-sprint/)
+This is the repository of source codes and datasets for a transparent and reproducible semantic data enrichment of foundation spatial data. The repository is developed and organised by Geographic Knowledge Lab (GKL). 
 
 ## Key resources 
 
