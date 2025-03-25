@@ -1,14 +1,28 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 
+################################################################################
+"""
+Some gazetteers are missing in the data catalogue from each state.
+Instead, data exist in the national gazetteer of Australia (ICSM). This program extracts
+the gazetteer from each state from this national gazetteer.
+
+You must:
+- Download the whole gazetteer (format .gpkg) and modify {path_icsm}
+- Modify the paths (if needed) and the parameters
+
+Just execute the program normally.
+"""
+
+
+################################################################################
+
 import geopandas
 import sys
 from IPython.core.ultratb import ColorTB
 import os, sys
-import toml
 import pandas as pd
 import json
-# import csv
 
 sys.excepthook = ColorTB()
 
@@ -18,11 +32,34 @@ WKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file
 sys.path.append(WKSPACE)
 
 
+################################################################################
+
+#---------------------------------
+# Paths / Params
+#---------------------------------
+
+state_to_extract = "ACT"
+
+# Path to the ICSM (downloaded from the national gazetteer) in the format .gpkg
+path_icsm = "/Users/alexis/Documents/04_Code/semadaten/data/ALL/PlaceNames.gpkg"
+
+# Output folder
+path_ACT_folder = os.path.join(
+    WKSPACE,
+    "./data/ACT/",
+)
+
+# Output CSV
+path_export_csv = os.path.join(
+    WKSPACE,
+    path_ACT_folder,
+    "ACT_241206.csv",
+)
+
+# Output JSON
+path_export_json = path_export_csv.replace(".csv", ".json")
 
 ################################################################################
-if __name__ == "__main__":
-    pass
-sys.excepthook = ColorTB()
 
 class Gazetteer_from_ICSM:
 
@@ -56,7 +93,11 @@ class Gazetteer_from_ICSM:
         # print(gdf_filtered.head())
     
         if file_output is not None:
-            gdf_filtered.to_csv(file_output, index=False, mode='w')
+            gdf_filtered.to_csv(
+                file_output, 
+                index=False, 
+                mode='w',
+            )
 
     #---------------------------------
     def export_csv_to_json(
@@ -82,22 +123,6 @@ class Gazetteer_from_ICSM:
 
 if __name__ == "__main__":
 
-    #---------------------------------
-    # Paths
-    #---------------------------------
-    path_icsm = "/Users/alexis/Documents/04_Code/semadaten/data/ALL/PlaceNames.gpkg"
-    path_ACT_folder = os.path.join(
-        WKSPACE,
-        "./data/ACT/",
-    )
-    path_export_csv = os.path.join(
-        WKSPACE,
-        path_ACT_folder,
-        "ACT_241206.csv",
-    )
-
-    path_export_json = path_export_csv.replace(".csv", ".json")
-
     if not os.path.exists(path_ACT_folder):
         os.mkdir(path_ACT_folder)
 
@@ -113,7 +138,7 @@ if __name__ == "__main__":
     )
 
     Gazetteer.filter_state(
-        state="ACT",
+        state=state_to_extract,
         file_output=path_export_csv,
     )
 
