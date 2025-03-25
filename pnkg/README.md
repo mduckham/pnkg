@@ -1,2 +1,2 @@
 # Place Name Knowledge Graph (PNKG)
-Files in turtle (ttl) file format for each state and territory in Australia. Data populated in the files is integrated in the Australian Place Names knowledge graph.  
+This folder contains a link to download the Australian Place Names Knowledge Graph (PNKG), which links and integrates data from all Australian state and territory gazetteers.   
