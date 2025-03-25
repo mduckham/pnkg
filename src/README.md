@@ -15,4 +15,4 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
 ### Other gazetter data formatting 
 
 ## RML mapping
-RML mapping rules are written and included in [place name mapping file](). 
+RML mapping rules are written and included in [place name mapping file](AusPlaceNameMapping20250325.ttl). 
