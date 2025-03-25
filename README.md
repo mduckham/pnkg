@@ -7,7 +7,7 @@ This is the repository of source codes and datasets for a transparent and reprod
 - [Geoscience Australia Place Names Ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html);
 - [Geoscience Australia Place-Names GitHub repository](https://github.com/GeoscienceAustralia/Placenames-Ontology);
 - [Composite Gazetteer of Australia](https://placenames.fsdf.org.au/);
-- [Data Product Specification for the Composite Gazetteer of Australia](doc/Composite-Gazetteer-DPS.pdf);
+- [Data Product Specification for the Composite Gazetteer of Australia](data/CompositeGazetteerDPS.pdf);
 - [Linked Data API codebase for National Composite Gazetteer of Australi](https://github.com/GeoscienceAustralia/placenames-dataset); and
 - [RML tools](https://rml.io/tools/);
 
