@@ -6,7 +6,7 @@ Before executing the RML mapping script, the state and territory gazetteers unde
 
 ### Extracting data from Australian composite gazetteer
 
-To add extract the gazetteer from the [ICSM Australian Composite Gazetteer](https://placenames.fsdf.org.au/), you can use `./conversion/extract_from_ICSM.py`. Instructions and parameters provided in the [Python code](conversion/extract_from_icsm.py). 
+To extract the gazetteer from the [ICSM Australian Composite Gazetteer](https://placenames.fsdf.org.au/), you can use `./conversion/extract_from_ICSM.py`. Instructions and parameters provided in the [Python code](conversion/extract_from_icsm.py). 
 
 ### Geographic coordinates in WKT format
 
