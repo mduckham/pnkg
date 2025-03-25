@@ -10,7 +10,7 @@ To add extract the gazetteer from the ICSM Australia Composite Gazetteer, you ca
 
 ### Geographic coordinates in WKT format
 
-To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instructions and parameters provoided in the Python code.
+To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instructions and parameters provoided in the [Python code](conversion/convert_shp_WKT.py).
 
 ### Other gazetter data formatting 
 
