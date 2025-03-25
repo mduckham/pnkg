@@ -1,0 +1,1931 @@
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix pa: <http://linked.data.gov.au/def/placenames/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix loci: <http://linked.data.gov.au/def/loci#> .
+@prefix vc: <http://www.w3.org/2006/vcard/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix fsdf: <http://linked.data.gov.au/def/fsdf/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dqv: <http://www.w3.org/ns/dqv#> .
+@prefix grel:    <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
+@prefix fnml: <http://semweb.mmlab.be/ns/fnml#> .
+@prefix fno: <http://w3id.org/function/ontology#> .
+@prefix pnkg: <http://geosensor.net/ns/pnkg#>.
+@base <http://geosensor.net/ns/pnkg#>.
+
+<#ACTSitesSource> a rml:LogicalSource;
+    rml:source "../Data/ACT.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#NTSitesSource> a rml:LogicalSource;
+    rml:source "../Data/NT.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#WASitesSource> a rml:LogicalSource;
+    rml:source "../Data/WA.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#QLDSitesSource> a rml:LogicalSource;
+    rml:source "../Data/QLD.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#TASSitesSource> a rml:LogicalSource;
+    rml:source "../Data/TAS.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#VICRoadsSitesSource> a rml:LogicalSource;
+    rml:source "../Data/VIC_Roads.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#VICSitesSource> a rml:LogicalSource;
+    rml:source "../Data/VIC_Places.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#NSWSitesSource> a rml:LogicalSource;
+    rml:source "../Data/NSW_with_wkt.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#SASitesSource> a rml:LogicalSource;
+    rml:source "../Data/SA_sites.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#SAAreasSource> a rml:LogicalSource;
+    rml:source "../Data/SA_areas_data.csv";
+    rml:referenceFormulation ql:CSV .
+
+<#SALinesSource> a rml:LogicalSource;
+    rml:source "../Data/SA_lines_data.csv";
+    rml:referenceFormulation ql:CSV.
+
+
+<#PlaceNameDataSource> a rml:LogicalSource;
+    rml:source "../../MetaData/AustralianPlacenamesMetadata.csv";
+    rml:referenceFormulation ql:CSV .
+
+
+############################ ACT ##########################################################################
+<#ACTSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#ACTSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "AUTH_ID";
+        ]
+    ];
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+       rr:parentTriplesMap <#ACTGeometryMapping>;  
+      ]
+    ];
+    # place classification
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{FEATURE}";
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#ACTPlaceNameMapping>;  
+      ]
+    ] .
+
+<#ACTGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#ACTSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{AUTHORITY}/{AUTH_ID}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "geometry";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#ACTPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#ACTSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "SUPPLY_DATE";
+            rr:datatype xsd:date;
+        ]
+    ];
+
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "NAME";
+    #         rr:datatype xsd:string;
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "NAME" ] ]
+          ]
+        ]
+      ];
+
+   rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#ACTPlaceNameStatusMapping>;  
+        ]
+    ];
+    
+  rr:predicateObjectMap [
+    rr:predicate pa:wasNamedBy;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+        rr:joinCondition [
+          rr:child "AUTHORITY"; 
+          rr:parent "ShortenName";
+          ]
+        ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate loci:isMemberOf;
+    rr:objectMap [
+      rr:parentTriplesMap <#PlaceNameDataMapping>;
+      rr:joinCondition [
+        rr:child "AUTHORITY"; 
+        rr:parent "ShortenName";
+        ]
+    ]
+  ] .
+
+<#ACTPlaceNameStatusMapping>
+  rml:logicalSource <#ACTSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "status";
+    ]
+  ] .
+
+########################################## NT ###############################################################
+<#NTSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#NTSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "AUTH_ID";
+        ]
+    ];
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+         rr:objectMap [
+          rr:parentTriplesMap <#NTGeometryMapping>;  
+      ]
+    ];
+    # place classification
+    #     rr:predicateObjectMap [
+    #     rr:predicate pa:hasPlaceClassification;
+    #     rr:objectMap [
+    #         rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{CATEGORY}";
+    #     ]
+    # ];
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{FEATURE}";
+        ]
+    ];
+    #link to place name 
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+       rr:objectMap [
+       rr:parentTriplesMap <#NTPlaceNameMapping>;  
+      ]
+    ] .
+
+<#NTGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#NTSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{AUTHORITY}/{AUTH_ID}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#NTPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#NTSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "SUPPLY_DATE";
+            rr:datatype xsd:date;
+        ]
+    ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "NAME";
+    #         rr:datatype xsd:string;
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "NAME" ] ]
+          ]
+        ]
+      ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#NTPlaceNameStatusMapping>;  
+        ]
+    ];
+
+    rr:predicateObjectMap [
+      rr:predicate pa:wasNamedBy;
+        rr:objectMap [
+          rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+          rr:joinCondition [
+            rr:child "AUTHORITY"; 
+            rr:parent "ShortenName";
+            ]
+          ]
+    ];
+
+    rr:predicateObjectMap [
+      rr:predicate loci:isMemberOf;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNameDataMapping>;
+        rr:joinCondition [
+          rr:child "AUTHORITY";
+          rr:parent "ShortenName"; 
+          ]
+          ]
+    ] .
+
+<#NTPlaceNameStatusMapping>
+  rml:logicalSource <#NTSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{STATUS}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "STATUS";
+    ]
+  ] .
+
+# ############################ WA ##########################################################################
+<#WASitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#WASitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{state}/{feature_number}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "feature_number";
+        ]
+    ];
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#WAGeometryMapping>;  
+      ]
+    ];
+
+    # place classification  does not align with the classifications in -ICSM Permanent Committee on Place Names
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{feature_class_description}";
+        ]
+    ];
+    
+    ## Link to place name 
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#WAPlaceNameMapping>;  
+      ]
+    ] .
+
+<#WAGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#WASitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{state}/{feature_number}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#WAPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#WASitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{state}/{feature_number}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateReleased;
+        rr:objectMap [
+            rml:reference "date_approved";
+            rr:datatype xsd:date;
+        ]
+    ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "geographic_name";
+    #          rr:datatype xsd:string;
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "geographic_name" ] ]
+          ]
+        ]
+      ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#WAPlaceNameStatusMapping>;  
+        ]
+    ];
+
+    rr:predicateObjectMap [
+      rr:predicate pa:wasNamedBy;
+        rr:objectMap [
+          rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+          rr:joinCondition [
+            rr:child "state"; 
+            rr:parent "ShortenName";
+            ]
+          ]
+    ];
+        
+    rr:predicateObjectMap [
+      rr:predicate loci:isMemberOf;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNameDataMapping>;
+        rr:joinCondition [
+          rr:child "state"; 
+          rr:parent "ShortenName";
+          ]
+      ]
+    ] .
+
+<#WAPlaceNameStatusMapping>
+  rml:logicalSource <#WASitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "status";
+    ]
+  ] .
+
+# # ############################ QLD ##########################################################################
+<#QLDSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#QLDSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{state}/{ref_no}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "ref_no"
+        ]
+    ];
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#QLDGeometryMapping>;  
+      ]
+    ];
+    # Some of place Classifications do not align with the classifications in - ICSM Permanent Committee on Place Names
+    # Ex:- Locality Bounded. Suburb
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{descriptio}";
+        ]
+    ];
+
+   rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#QLDPlaceNameMapping>;  
+      ]
+    ]  .
+
+<#QLDGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#QLDSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{state}/{ref_no}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "geometry";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#QLDPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#QLDSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{state}/{ref_no}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "gazetted_d";
+            rr:datatype xsd:date;
+        ]
+    ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "place_name";
+    #         rr:datatype xsd:string;
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "place_name" ] ]
+          ]
+        ]
+      ];
+
+#### alternativeName - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:alternativeName;
+        rr:objectMap [
+            rml:reference "alt_name";
+            rr:datatype xsd:string;
+        ]
+    ] ;
+
+#### origin - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:origin;
+        rr:objectMap [
+            rml:reference "origin";
+            rr:datatype xsd:string;
+        ]
+    ] ;
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#QLDPlaceNameStatusMapping>;  
+        ]
+    ];
+
+    rr:predicateObjectMap [
+      rr:predicate pa:wasNamedBy;
+        rr:objectMap [
+          rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+          rr:joinCondition [
+            rr:child "state"; 
+            rr:parent "ShortenName";
+            ]
+          ]
+    ];
+        
+    rr:predicateObjectMap [
+      rr:predicate loci:isMemberOf;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNameDataMapping>;
+        rr:joinCondition [
+          rr:child "state"; 
+          rr:parent "ShortenName";
+          ]
+      ]
+    ] .
+
+<#QLDPlaceNameStatusMapping>
+  rml:logicalSource <#QLDSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{name_status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "name_status";
+    ]
+  ] .
+
+############################ TAS ##########################################################################
+<#TASSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#TASSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "AUTH_ID";
+        ]
+    ];
+     # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#TASGeometryMapping>;  
+      ]
+    ];
+    # place classification
+    #     rr:predicateObjectMap [
+    #     rr:predicate pa:hasPlaceClassification;
+    #     rr:objectMap [
+    #         rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{CATEGORY}";
+    #     ]
+    # ];
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{FEATURE}";
+        ]
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#TASPlaceNameMapping>;  
+      ]
+    ].
+
+<#TASGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#TASSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{AUTHORITY}/{AUTH_ID}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#TASPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#TASSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{AUTHORITY}/{AUTH_ID}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "SUPPLY_DATE";
+            rr:datatype xsd:date;
+        ]
+    ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "NAME"
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "NAME" ] ]
+          ]
+        ]
+        ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#TASPlaceNameStatusMapping>;  
+        ]
+    ];
+
+rr:predicateObjectMap [
+  rr:predicate pa:wasNamedBy;
+    rr:objectMap [
+      rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+      rr:joinCondition [
+        rr:child "AUTHORITY"; 
+        rr:parent "ShortenName";
+        ]
+      ]
+];
+
+rr:predicateObjectMap [
+  rr:predicate loci:isMemberOf;
+   rr:objectMap [
+    rr:parentTriplesMap <#PlaceNameDataMapping>;
+    rr:joinCondition [
+      rr:child "AUTHORITY"; 
+      rr:parent "ShortenName";
+      ]
+  ]
+] .
+
+<#TASPlaceNameStatusMapping>
+  rml:logicalSource <#TASSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{STATUS}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "STATUS";
+    ]
+  ] .
+
+# ############################ VIC - Roads ##########################################################################
+<#VICRoadsSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICRoadsSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{State}/{Name Id}";
+        rr:class pa:Place, geo:Feature;
+    ]; 
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "Name Id";
+        ]
+    ];
+
+   # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#VICRoadsGeometryMapping>;  
+      ]
+    ];
+
+    # Place Classification does not align with the classifications in -ICSM Permanent Committee on Place Names
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{Feature Type}";
+        ]
+    ];
+
+   rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#VICRoadsPlaceNameMapping>;  
+      ]
+    ] .
+
+<#VICRoadsGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICRoadsSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{State}/{Name Id}";
+         rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#VICRoadsPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICRoadsSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{State}/{Name Id}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "Gazette Published date";
+            rr:datatype xsd:date;
+        ]
+    ];
+    
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "Place Name";
+    #         rr:datatype xsd:string;
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "Place Name" ] ]
+          ]
+        ]
+      ];
+
+   #### origin - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:origin;
+        rr:objectMap [
+            rml:reference "Historical Information";
+            rr:datatype xsd:string;
+        ]
+    ] ;
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#VIC_RoadsPlaceNameStatusMapping>;  
+        ]
+    ];
+    
+  rr:predicateObjectMap [
+    rr:predicate pa:wasNamedBy;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+        rr:joinCondition [
+          rr:child "State"; 
+          rr:parent "ShortenName";
+          ]
+        ]
+  ];
+    
+  rr:predicateObjectMap [
+    rr:predicate loci:isMemberOf;
+    rr:objectMap [
+      rr:parentTriplesMap <#PlaceNameDataMapping>;
+      rr:joinCondition [
+        rr:child "State"; 
+        rr:parent "ShortenName";
+        ]
+    ]
+  ] .
+
+<#VIC_RoadsPlaceNameStatusMapping>
+  rml:logicalSource <#VICRoadsSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{Place Name Status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "Place Name Status";
+    ]
+  ] .
+
+# # ############################ VIC - Sites ##########################################################################
+<#VICSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{State}/{Name Id}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "Name Id";
+        ]
+    ];
+     # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#VICSitesGeometryMapping>;  
+      ]
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{Feature Type}";
+        ]
+    ];
+ 
+ rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#VICSitesPlaceNameMapping>;  
+      ]
+    ] .
+
+<#VICSitesGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{State}/{Name Id}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#VICSitesPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#VICSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{State}/{Name Id}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "Gazette Published date";
+            rr:datatype xsd:date;
+        ]
+    ];
+
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "Place Name"
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "Place Name" ] ]
+          ]
+        ]
+      ];
+
+#### origin - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:origin;
+        rr:objectMap [
+            rml:reference "Historical Information";
+            rr:datatype xsd:string;
+        ]
+    ] ;
+
+    rr:predicateObjectMap [
+        rr:predicate pa:status;
+        rr:objectMap [
+            rr:parentTriplesMap <#VICSitesPlaceNameStatusMapping>;  
+        ]
+    ];
+
+rr:predicateObjectMap [
+  rr:predicate pa:wasNamedBy;
+    rr:objectMap [
+      rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+      rr:joinCondition [
+        rr:child "State"; 
+        rr:parent "ShortenName";
+        ]
+      ]
+];
+
+##2025/03/24 ###
+rr:predicateObjectMap [
+        rr:predicate pa:isIndigenous ;
+          rr:objectMap [
+            rml:reference "IsIndigenous";
+            rr:datatype xsd:boolean;
+        ]
+];
+
+
+rr:predicateObjectMap [
+  rr:predicate loci:isMemberOf;
+   rr:objectMap [
+    rr:parentTriplesMap <#PlaceNameDataMapping>;
+    rr:joinCondition [
+      rr:child "State"; 
+      rr:parent "ShortenName";
+      ]
+  ]
+] .
+
+# <#FunctionIsIndigenousMap>
+#     fnml:functionValue [                                 
+#         rml:logicalSource <#VICSitesSource> ;             
+#         rr:predicateObjectMap [
+#             rr:predicate fno:executes ;                   
+#             rr:objectMap [ rr:constant grel:string_match ] ## StringContains
+#         ] ;
+#         rr:predicateObjectMap [
+#             rr:predicate grel:valueParam ;
+#             rr:objectMap [ rr:reference "Aboriginal Origins" ]          
+#         ];
+
+#        rr:predicateObjectMap [
+#             rr:predicate grel:valueParam2 ;
+#             rr:objectMap [ rr:reference "^Aboriginal Name$" ]          
+#         ]
+#     ] .
+
+
+<#VICSitesPlaceNameStatusMapping>
+  rml:logicalSource <#VICSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{Place Name Status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "Place Name Status";
+    ]
+  ] .
+
+# ############################ NSW ##########################################################################
+<#NSWSitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#NSWSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{STATE}/{REFERENCE}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "REFERENCE";
+        ]
+    ];
+  # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#NSWGeometryMapping>;  
+      ]
+    ];
+    # place classification - Some classifications do not align with the classifications in -ICSM Permanent Committee on Place Names
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{DESIGNATION}";
+        ]
+    ];
+    
+    #link to place name 
+     rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#NSWPlaceNameMapping>;  
+      ]
+    ] .
+
+<#NSWGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#NSWSitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{STATE}/{REFERENCE}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+<#NSWPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#NSWSitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{STATE}/{REFERENCE}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "GAZETTE DATE FORMATTED";
+            rr:datatype xsd:date;
+        ]
+    ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "PLACENAME";
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "PLACENAME" ] ]
+          ]
+        ]
+      ];
+
+    ## previousName - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:previousName;
+        rr:objectMap [
+            rml:reference "PREVIOUS NAMES";
+        ]
+    ];
+
+    #### origin - new data property
+    rr:predicateObjectMap [
+        rr:predicate pnkg:origin;
+        rr:objectMap [
+            rml:reference "ORIGIN";
+            rr:datatype xsd:string;
+        ]
+    ] ;
+
+    rr:predicateObjectMap [
+      rr:predicate pa:status;
+      rr:objectMap [
+          rr:parentTriplesMap <#NSWPlaceNameStatusMapping>;  
+      ]
+  ];
+
+    rr:predicateObjectMap [
+    rr:predicate pa:wasNamedBy;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+        rr:joinCondition [
+          rr:child "STATE"; 
+          rr:parent "ShortenName";
+          ]
+        ]
+    ];
+
+    rr:predicateObjectMap [
+    rr:predicate loci:isMemberOf;
+      rr:objectMap [
+      rr:parentTriplesMap <#PlaceNameDataMapping>;
+      rr:joinCondition [
+        rr:child "STATE"; 
+        rr:parent "ShortenName";
+        ];
+        ];
+    ] .
+
+<#NSWPlaceNameStatusMapping>
+  rml:logicalSource <#NSWSitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{STATUS}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "STATUS";
+    ]
+  ] .
+
+
+# ############################ SA ##########################################################################
+## SA sites -  Place Mapping
+<#SASitesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#SASitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{state}/{recno}";
+        rr:class pa:Place, geo:Feature;
+    ];
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "recno";
+        ]
+    ];
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+       rr:parentTriplesMap <#SASitesGeometryMapping>;  
+      ]
+    ];
+    # place classification
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:hasPlaceClassification;
+    #     rr:objectMap [
+    #         rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{feature_category}";
+    #     ]
+    # ];
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:hasPlaceClassification;
+    #     rr:objectMap [
+    #         rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{feature_type}";
+    #     ]
+    # ];
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceClassification;
+        rr:objectMap [
+            rr:template "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/{feature_type}";
+        ]
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+       rr:parentTriplesMap <#SASitesPlaceNameMapping>;  
+      ]
+    ] .
+
+
+#SA Sites Mapping - Geometry
+<#SASitesGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#SASitesSource>;
+    
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/Point/{state}/{recno}";
+        rr:class sf:Point;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] .
+
+### SA Areas Place Mapping
+<#SAAreasPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#SAAreasSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{state}/{recno}";
+        rr:class pa:Place, geo:Feature;
+    ];
+
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "recno";
+        ]
+    ];
+
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+        rr:objectMap [
+          rr:parentTriplesMap <#SAAreasGeometryMapping>;  
+      ]
+    ];
+    
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+            rr:template "http://geosensor.net/ns/pnkg/PlaceName/{state}/{recno}";
+        ]
+    ] .
+
+<#SAAreasGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#SAAreasSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/MultiPolygon/{state}/{recno}";
+         rr:class sf:MultiPolygon;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] 
+.
+
+### SA Lines Place Mapping
+<#SALinesPlaceMapping> a rr:TriplesMap;
+    rml:logicalSource <#SALinesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Place/{state}/{recno}";
+        rr:class pa:Place, geo:Feature;
+    ];
+
+    #place identifier
+    rr:predicateObjectMap [
+        rr:predicate dcterms:identifier;
+        rr:objectMap [
+            rml:reference "recno";
+        ]
+    ];
+
+    # geometry
+    rr:predicateObjectMap [
+        rr:predicate geo:hasGeometry;
+         rr:objectMap [
+          rr:parentTriplesMap <#SALinesGeometryMapping>;  
+      ]
+    ] ;
+
+    rr:predicateObjectMap [
+        rr:predicate pa:hasPlaceName;
+        rr:objectMap [
+            rr:template "http://geosensor.net/ns/pnkg/PlaceName/{state}/{recno}";
+        ]
+    ] .
+
+  <#SALinesGeometryMapping> a rr:TriplesMap;
+    rml:logicalSource <#SALinesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/Geometry/MultiLineString/{state}/{recno}";
+        rr:class sf:MultiLineString;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate geo:asWKT;
+        rr:objectMap [
+            rml:reference "WKT";
+            rr:datatype geo:wktLiteral;
+        ]
+    ] 
+.
+
+<#SASitesPlaceNameMapping> a rr:TriplesMap;
+    rml:logicalSource <#SASitesSource>;
+    rr:subjectMap [
+        rr:template "http://geosensor.net/ns/pnkg/PlaceName/{state}/{recno}";
+        rr:class pa:OfficialPlaceName, pa:PlaceName;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate pa:dateGazetted;
+        rr:objectMap [
+            rml:reference "gazdate";
+            rr:datatype xsd:date;
+        ]
+    ];
+
+  ## New data property - dateModified
+    rr:predicateObjectMap [
+        rr:predicate pnkg:dateModified;
+        rr:objectMap [
+            rml:reference "date_cr_al";
+            rr:datatype xsd:date;
+        ]
+    ];
+
+    # rr:predicateObjectMap [
+    #     rr:predicate pa:name;
+    #     rr:objectMap [
+    #         rml:reference "name";
+    #         rr:datatype xsd:string
+    #     ]
+    # ];
+
+    ## GREL functions create errors when it has null values
+    ## Hence, place_name should have values
+    rr:predicateObjectMap [
+        rr:predicate pa:name;
+        rr:objectMap [
+          fnml:functionValue [
+            rr:predicateObjectMap [
+              rr:predicate fno:executes ;
+              rr:objectMap [ rr:constant grel:string_toTitlecase ] ] ;
+            rr:predicateObjectMap [
+              rr:predicate grel:valueParameter ;
+              rr:objectMap [ rml:reference "name" ] ]
+          ]
+        ]
+      ];
+
+    ## New data property - previuosName
+    rr:predicateObjectMap [
+        rr:predicate pnkg:previousName;
+        rr:objectMap [
+            rml:reference "prevname";
+            rr:datatype xsd:string
+        ]
+    ];
+
+    rr:predicateObjectMap [
+      rr:predicate pa:status;
+      rr:objectMap [
+          rr:parentTriplesMap <#SAPlaceNameStatusMapping>;  
+      ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate pa:wasNamedBy;
+      rr:objectMap [
+        rr:parentTriplesMap <#PlaceNamingAuthorityMapping>;
+        rr:joinCondition [
+          rr:child "dataset_identifier"; 
+          rr:parent "DatasetIdentifier" 
+          ]
+        ]
+  ];
+    
+  rr:predicateObjectMap [
+    rr:predicate loci:isMemberOf;
+    rr:objectMap [
+      rr:parentTriplesMap <#PlaceNameDataMapping>;
+      rr:joinCondition [
+        rr:child "dataset_identifier"; 
+        rr:parent "DatasetIdentifier" 
+        ]
+    ]
+  ] .
+
+<#SAPlaceNameStatusMapping>
+  rml:logicalSource <#SASitesSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{status}";
+    rr:class pa:Status;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+      rml:reference "status";
+    ]
+  ] .
+
+################################## Place Name Data Mapping ###############################################
+<#PlaceNamingAuthorityMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{ShortenName}/{Organization}";
+    rr:class pa:PlaceNamingAuthority;
+  ].
+
+
+<#PlaceNameDataMapping> a rr:TriplesMap;
+   rml:logicalSource <#PlaceNameDataSource>;
+
+rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/{ShortenName}/{Title}";
+    rr:class dcat:DataSet;
+  ];
+  
+ rr:predicateObjectMap [
+    rr:predicate dcterms:identifier;
+    rr:objectMap [
+      rml:reference "DatasetIdentifier";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:title;
+    rr:objectMap [
+      rml:reference "Title";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate fsdf:hasCustodian;
+    rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataCustodianMapping>;  
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:description;
+    rr:objectMap [
+      rml:reference "Description";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate pnkg:meta_data_usage;
+    rr:objectMap [
+      rml:reference "Usage";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+## Map DataQuality-Lineage
+rr:predicateObjectMap [
+    rr:predicate dqv:hasQualityMeasurement;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataQualityLineageMapping>;  
+    ]
+  ];
+
+## Map DataQuality-Completeness
+rr:predicateObjectMap [
+    rr:predicate dqv:hasQualityMeasurement;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataQualityCompletenessMapping>;  
+    ]
+  ];
+  
+## Map DataQuality - Positional Accuracy
+rr:predicateObjectMap [
+    rr:predicate dqv:hasQualityMeasurement;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataQualityPositionalAccMapping>;  
+    ]
+  ];
+
+## Map DataQuality - Attribute Accuracy
+rr:predicateObjectMap [
+    rr:predicate dqv:hasQualityMeasurement;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataQualityAttributeAccMapping>;  
+    ]
+  ];
+
+## Map DataQuality - Logical Consistency
+rr:predicateObjectMap [
+    rr:predicate dqv:hasQualityMeasurement;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataQualityLogConsistencyMapping>;  
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:Location;
+    rr:objectMap [
+      rml:reference "GeographicExtent";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate fsdf:hasJurisdiction;
+    rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameData_Jurisdiction>;  
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcat:bbox;
+    rr:objectMap [
+      rml:reference "BoundingBox";
+      rr:datatype geo:wktLiteral;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:issued;
+    rr:objectMap [
+      rml:reference "InitiallyAcquiredOn";
+      rr:datatype xsd:date;
+    ]
+  ];
+
+#User defined data property
+  rr:predicateObjectMap [
+    rr:predicate pnkg:dataset_updatefrequency;
+    rr:objectMap [
+      rml:reference "UpdateFrequency";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dcterms:license;
+    rr:objectMap [
+      rml:reference "DataLicence";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+rr:predicateObjectMap [
+    rr:predicate dcat:contactPoint;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDataOrganizationMapping>;  
+    ]
+  ];
+
+rr:predicateObjectMap [
+    rr:predicate dcat:landingPage;
+       rr:objectMap [
+      rml:reference "WebAddress";
+    ]
+  ];
+
+
+ rr:predicateObjectMap [
+    rr:predicate dcat:distribution;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameDatasetDistribution>;  
+    ]
+  ];
+  
+rr:predicateObjectMap [
+    rr:predicate dcterms:publisher;
+    rr:objectMap [
+      rml:reference "Publisher/Agency";
+      rr:datatype xsd:string;
+    ]
+  ] .
+
+<#PlaceNameDatasetDistribution>
+  rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/PlaceNameDatasetDistribution/{ShortenName}";
+    rr:class dcat:Distribution
+  ];
+
+rr:predicateObjectMap [
+    rr:predicate dcat:downloadURL;
+    rr:objectMap [
+      rml:reference "DataDownloadLink";
+      rr:termType rr:IRI;
+    ]
+  ].
+
+
+<#PlaceNameDataCustodianMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/Custodian/{DataAuthority}/{ShortenName}";
+    rr:class fsdf:Agency;
+  ];
+
+ rr:predicateObjectMap [
+    rr:predicate dcterms:creator;
+    rr:objectMap [
+      rml:reference "DataProvider";
+      rr:datatype xsd:string;
+    ]
+  ].
+
+ <#PlaceNameDataOrganizationMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/Organization/{ShortenName}";
+    rr:class vc:Kind;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate vc:organization-name;
+    rr:objectMap [
+      rml:reference "Organization";
+      rr:datatype xsd:string;
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate vc:street-address; 
+    rr:objectMap [
+      rml:reference "StreetAddress";
+      rr:datatype xsd:string;
+    ]
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate vc:hasTelephone;
+       rr:objectMap [
+       rr:parentTriplesMap <#PlaceNameData_Contacts_Organization_Telephone>;  
+    ]
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate vc:hasEmail; 
+    rr:objectMap [
+      rml:reference "Email";  
+      rr:datatype xsd:string;
+        ] 
+    ].
+
+ <#PlaceNameDataQualityLineageMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/Lineage/{ShortenName}";
+    rr:class dqv:QualityMeasurement;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dqv:isMeasurementOf;
+    rr:objectMap [
+     rr:parentTriplesMap <#LineageMetric>;
+    ]
+  ] .
+
+
+<#LineageMetric>
+rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/LineageMetric/{ShortenName}";
+    rr:class dqv:Metric;
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate dqv:value;
+    rr:objectMap [
+      rml:reference "DataQualityLineage";
+    ]
+  ] .
+
+ <#PlaceNameDataQualityCompletenessMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/Completeness/{ShortenName}";
+    rr:class dqv:QualityMeasurement;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dqv:isMeasurementOf;
+    rr:objectMap [
+     rr:parentTriplesMap <#CompletenessMetric>;
+    ]
+  ] .
+  
+<#CompletenessMetric>
+rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/CompletenessMetric/{ShortenName}";
+    rr:class dqv:Metric;
+  ];
+  
+  
+  rr:predicateObjectMap [
+    rr:predicate dqv:value;
+    rr:objectMap [
+      rml:reference "DataQualityCompleteness";
+    ]
+  ] .
+
+ <#PlaceNameDataQualityPositionalAccMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/PositionalAccuracy/{ShortenName}";
+    rr:class dqv:QualityMeasurement;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dqv:isMeasurementOf;
+    rr:objectMap [
+     rr:parentTriplesMap <#AttributeAccuracyMetric>;
+    ]
+  ] .
+
+<#PositionalAccuracyMetric>
+rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/PositionalAccuracyMetric/{ShortenName}";
+    rr:class dqv:Metric;
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate dqv:value;
+    rr:objectMap [
+      rml:reference "DataQualityPositionalAccuracy";
+    ]
+  ] .
+
+ <#PlaceNameDataQualityAttributeAccMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/AttributeAccuracy/{ShortenName}";
+    rr:class dqv:QualityMeasurement;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate dqv:isMeasurementOf;
+    rr:objectMap [
+     rr:parentTriplesMap <#AttributeAccuracyMetric>;
+    ]
+  ] .
+
+<#AttributeAccuracyMetric>
+rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/AttributeAccuracyMetric/{ShortenName}";
+    rr:class dqv:Metric;
+  ];
+
+
+ rr:predicateObjectMap [
+    rr:predicate dqv:value;
+    rr:objectMap [
+      rml:reference "DataQualityAttributeAccuracy";
+    ]
+  ] .
+
+<#PlaceNameDataQualityLogConsistencyMapping>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/LogicalConsistency/{ShortenName}";
+    rr:class dqv:QualityMeasurement;
+  ];
+  
+  rr:predicateObjectMap [
+    rr:predicate dqv:isMeasurementOf;
+    rr:objectMap [
+     rr:parentTriplesMap <#LogicalConsistencyMetric>;
+    ]
+  ] .
+
+<#LogicalConsistencyMetric>
+rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/DataQuality/LogicalConsistencyMetric/{ShortenName}";
+    rr:class dqv:Metric;
+  ];
+
+ rr:predicateObjectMap [
+    rr:predicate dqv:value;
+    rr:objectMap [
+      rml:reference "DataQualityLogicalConsistency";
+    ]
+  ] .
+
+<#PlaceNameData_Jurisdiction>
+  rml:logicalSource <#PlaceNameDataSource>;
+
+ rr:subjectMap [
+  rr:template "http://geosensor.net/ns/pnkg/{Jurisdiction}/{ShortenName}";
+  rr:class fsdf:Jurisdiction;
+   ].
+
+
+<#PlaceNameData_Contacts_Organization_Telephone>
+  rml:logicalSource <#PlaceNameDataSource>;
+ 
+  rr:subjectMap [
+    rr:template "http://geosensor.net/ns/pnkg/Organization/Telephone/{ShortenName}";
+    rr:class vc:TelephoneType;
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate vc:hasValue;
+       rr:objectMap [
+        rml:reference "Phone";
+        rr:datatype xsd:string;
+    ]
+  ].
