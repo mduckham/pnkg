@@ -13,7 +13,7 @@ This is the repository of source codes and datasets for a transparent and reprod
 
 ## Repository structure
 
-- **data**: Folder with data from official gazetteers that was linked and enriched in the Place Names Knowledge Graph.
+- **data**: Folder with data from official gazetteers that was linked and enriched in the Place Names Knowledge Graph (PNKG).
 - **doc**: Project documentation and examples. 
 - **lib**: External libraries and software.
 - **pnkg**: Documentation and a link for downloading the PNKG. 
