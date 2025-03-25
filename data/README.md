@@ -1,5 +1,5 @@
 # Data 
-This folder includes place name gazetteers for each state and territory in Australia. Please navigate to each folder to download or access gazetteer data. 
+This folder includes place name gazetteers for each state and territory in Australia. Please navigate to each folder to download or access gazetteer data. Data product specification for composite gazetteer of Australia is provided in this [report](CompositeGazetteerDPS.pdf). To access metadata information related to gazetteer data please follow web links included in the table below. 
 
 ### Metadata for gazetteer data
 
