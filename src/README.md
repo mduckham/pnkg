@@ -14,6 +14,9 @@ Before executing the RML mapping script, the state and territory gazetteers unde
   - (Instructions / parameters in the code)
   - 
 ### Geographic coordinates in WKT format
+
+To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instructions and parameters provoided in the Python code.
+
 ### Other gazetter data formatting 
 
 ## RML mapping
