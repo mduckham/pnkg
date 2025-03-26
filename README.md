@@ -60,13 +60,14 @@ The relevant paths of the mapping and output files should be mentioned in the co
 ## Execution
 Update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
 Example:- 
-```<#ACTSitesSource> a rml:LogicalSource;
-    rml:source "../Data/ACT.csv";
-    rml:referenceFormulation ql:CSV . ```
+<pre><#ACTSitesSource> a rml:LogicalSource;
+      rml:source "../Data/ACT.csv";  
+      rml:referenceFormulation ql:CSV .</pre>
 
-Then, change the execution command mentioned above appropriately, mentioning the locations of the jar file, mapping file, and the location that should be saved in the Output file. The result will be stored in 
-Example:-
-```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```
+Then, change the execution command mentioned above appropriately, mentioning the locations of the jar file, mapping file, and the location where the  Output file should be saved. <br>
+Example:-<br>
+```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```<br>
+
 The result will be stored in './src/PlaceNameKGAus/out/pnkg_out.ttl'
  
 ## Recommendations
