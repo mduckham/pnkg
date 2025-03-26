@@ -44,7 +44,8 @@ The below image shows the snapshot of the classes, Object Property (OP), and Dat
 ![Place Name Ontology Diagram](doc/placename-ontology.png)
 
 ## Installation
-The RML processor is required to generate linked data using RML rules. In this study, we used RML-Mapper-Java to execute the RML rules for constructing a place-name knowledge graph.
+An RML processor is required to generate linked data using RML rules. In this study, we used RML-Mapper-Java to execute the RML rules for constructing the PlaceName knowledge graph.
+
 ###  RMLmapper java 
 #### Prerequisites 
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
@@ -58,7 +59,7 @@ The RML processor is required to generate linked data using RML rules. In this s
 The relevant paths of the mapping and output files should be mentioned in the command. 
 
 ## Execution
-Update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
+It is required to update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
 Example:- 
 <pre><#ACTSitesSource> a rml:LogicalSource;
       rml:source "../Data/ACT.csv";  
