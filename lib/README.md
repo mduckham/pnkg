@@ -1,5 +1,13 @@
 # External libraries and dependencies 
 
+###  RMLmapper-java 
+[RMLMapper](https://github.com/RMLio/rmlmapper-java) has been used as the RML processor to generate linked data using RML rules
+
+#### Prerequisites for RMLmapper-java
+* Java 17 is the minimum required version for compiling and running the current version of the project. <br>
+* Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
+* Apache Maven is required to be installed if you still need to install it. It can be done using [Homebrew](https://macpaw.com/how-to/install-maven-on-mac) .<br>
+
 ## Other RML processors 
 ### PyRML 
 #### Prerequisites 
