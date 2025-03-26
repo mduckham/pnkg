@@ -68,7 +68,7 @@ Then, change the execution command mentioned above appropriately, mentioning the
 Example:-<br>
 ```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```<br>
 
-The result will be stored in './src/PlaceNameKGAus/out/pnkg_out.ttl'
+The result will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
  
 ## Recommendations
 
