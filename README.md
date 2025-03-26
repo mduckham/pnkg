@@ -71,6 +71,7 @@ Example:-<br>
 The result will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
  
 ## Recommendations
+* Suggest creating SHACL rules to validate the RDF output.
 
 ## Limitations 
 The created RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
