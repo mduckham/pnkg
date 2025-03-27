@@ -13,7 +13,7 @@
 * Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```).
   
 #### Execution
-The following command should specify the relevant paths for the mapping and output files:
+The following execution command should specify the relevant paths for the mapping and output files:
 <pre>```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br></pre>
 The target location of each data source file in the RML mapping file must be updated to match the correct file paths on your local machine.
 
@@ -22,7 +22,7 @@ Example:
       rml:source "../Data/ACT.csv";  
       rml:referenceFormulation ql:CSV .</pre>
 
-Then, change the execution command mentioned above appropriately, mentioning the locations of the jar file, mapping file, and the location where the  Output file should be saved. <br>
+Modify the execution command as needed, specifying the locations of the JAR file, mapping file, and the destination for the output file. <br>
 Example:-<br>
 ```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```<br>
 
