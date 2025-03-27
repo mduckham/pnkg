@@ -43,42 +43,16 @@ The below image shows the snapshot of the classes, Object Property (OP), and Dat
 
 ![Place Name Ontology Diagram](doc/placename-ontology.png)
 
-An overview of the knowledge graph construction process is depicted in the following figure.
+## Knowledge graph construction
+
+The following figure illustrates the workflow of the knowledge graph construction process.
 <div align="center">
   <img src="doc/PlaceNameProcess.png" alt="Alt text" style="width:50%;">
 </div>
 
-## Installation
-An RML processor is required to generate linked data using RML rules. In this study, we used RML-Mapper-Java to execute the RML rules for constructing the PlaceName knowledge graph. 
-
-###  RMLmapper java 
-#### Prerequisites 
-* Java 17 is the minimum required version for compiling and running the current version of the project. <br>
-* Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
-* Apache Maven is required to be installed if you still need to install it. It can be done using [Homebrew](https://macpaw.com/how-to/install-maven-on-mac) .<br>
-#### Steps 
-* Clone the application from the [GitHub repository](https://github.com/RMLio/rmlmapper-java) 
-* Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```) 
-##### Command to execute the mapping file 
-```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
-The relevant paths of the mapping and output files should be mentioned in the command. 
-
-## Execution
-It is required to update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
-Example:- 
-<pre><#ACTSitesSource> a rml:LogicalSource;
-      rml:source "../Data/ACT.csv";  
-      rml:referenceFormulation ql:CSV .</pre>
-
-Then, change the execution command mentioned above appropriately, mentioning the locations of the jar file, mapping file, and the location where the  Output file should be saved. <br>
-Example:-<br>
-```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```<br>
-
-The result will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
- 
 ## Recommendations
-* Suggest creating SHACL rules to validate the RDF output.
+It is recommended to create SHACL rules and validate the RDF output for consistency and correctness.
 
 ## Limitations 
-The created RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
+The RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
 
