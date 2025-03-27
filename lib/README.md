@@ -51,7 +51,9 @@ python converter.py [-o RDF out file] [-f RDF out file] [-m] input
 ``` 
 
 Example:  
-<pre>```python converter.py -o artists_places.ttl -f turtle examples/artists/artist-map.ttl ``` <br></pre>
+```
+python converter.py -o artists_places.ttl -f turtle examples/artists/artist-map.ttl
+``` 
 Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file. 
 
 ### Burp
@@ -76,6 +78,8 @@ java -jar burp.jar [-h] [-b=<baseIRI>] -m=<mappingFile> [-o=<outputFile>]
 ``` 
 
 Example: 
-<pre>```java -jar burp.jar -m=mapping.ttl -o=result.nq ``` <br></pre>
+```
+java -jar burp.jar -m=mapping.ttl -o=result.nq
+```
 Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file.  
 
