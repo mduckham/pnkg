@@ -12,7 +12,7 @@ To extract the gazetteer from the [ICSM Australian Composite Gazetteer](https://
 
 To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instructions and parameters are provided in the [Python code](conversion/convert_shp_WKT.py). The [requirements.txt](conversion/requirements.txt) file includes the dependencies and packages required to run the Python code. 
 
-### Other gazetteer data formatting 
+### Gazetteer data formatting 
 - NSW
   - A new column (GAZETTE DATE FORMATTED) was added to record the converted date after removing unnecessary text segments.
   - Added a new column to record the state's abbreviation (NSW)
@@ -29,3 +29,21 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
 
 ## RML mapping
 RML mapping rules are written and included in [place name mapping file](AusPlaceNameMapping20250325.ttl). 
+
+#### Execution
+The following execution command should specify the relevant paths for the mapping and output files:
+ ``` 
+java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl
+ ``` 
+The target location of each data source file in the RML mapping file must be updated to match the correct file paths on your local machine.
+Example: 
+<pre><#ACTSitesSource> a rml:LogicalSource;
+      rml:source "../Data/ACT.csv";  
+      rml:referenceFormulation ql:CSV .</pre>
+Modify the execution command as needed, specifying the locations of the JAR file, mapping file, and the destination for the output file. 
+Example:
+```
+java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl
+```
+The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
+In this project the knowledge graph was build using RMLmapper-java. Alternatively, other RML processors including PyRML and BURP can be used to build the PNKG. 
