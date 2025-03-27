@@ -46,4 +46,4 @@ Example:
 java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl
 ```
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
-In this project, the knowledge graph was built using [RMLmapper-java](semadaten/lib/README.md). Alternatively, other RML processors, such as [PyRML and BURP](lib/README.md), can be used to construct the PNKG. 
+In this project, the knowledge graph was built using [RMLmapper-java](https://github.com/mduckham/semadaten/blob/main/lib/README.md). Alternatively, other RML processors, such as [PyRML and BURP](https://github.com/mduckham/semadaten/blob/main/lib/README.md), can be used to construct the PNKG. 
