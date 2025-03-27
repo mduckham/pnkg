@@ -46,10 +46,10 @@ The below image shows the snapshot of the classes, Object Property (OP), and Dat
 ## Knowledge graph construction
 The knowledge construction workflow includes the following stages: 
 
-- data prapration
-- RML mapping and processing
-- knowledge graph generation
-- 
+- data prapration;
+- RML mapping and processing; and
+- knowledge graph generation.
+  
 The following figure illustrates the workflow of the knowledge graph construction process.
 <div align="center">
   <img src="doc/PlaceNameProcess.png" alt="Alt text" style="width:50%;">
@@ -59,5 +59,5 @@ The following figure illustrates the workflow of the knowledge graph constructio
 It is recommended to create SHACL rules and validate the RDF output for consistency and correctness.
 
 ## Limitations 
-RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
+The RML mapping and processing stage supports only data in CSV format. To use the same mapping rules, data in other formats must be converted to CSV. Additionally, minor modifications to the mapping rules may be required.
 
