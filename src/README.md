@@ -25,8 +25,7 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
   - Added a new column to record the state's abbreviation (QLD)
   - Added a new column to record “status” as gazetted
 - VIC (Places)
-  - Added “IsIndigenous” column
-    - If the "Aboriginal Origins" column contains "Aboriginal Name," then the "IsIndigenous" column is set to TRUE; otherwise, it is set to FALSE.
+  - Added “IsIndigenous” column; for example, if the "Aboriginal Origins" column contains "Aboriginal Name," then the "IsIndigenous" column is set to TRUE; otherwise, it is set to FALSE.
 
 ## RML mapping
 RML mapping rules are written and included in [place name mapping file](AusPlaceNameMapping20250325.ttl). 
