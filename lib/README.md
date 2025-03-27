@@ -13,8 +13,8 @@
 * Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```).
   
 #### Execution
+The following command should specify the relevant paths for the mapping and output files.
 ```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
-The command should specify the relevant paths for the mapping and output files.
 Important: The target location of each data source file in the RML mapping file must be updated to match the correct file paths on your local machine.
 
 Example: 
