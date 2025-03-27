@@ -9,7 +9,7 @@ Important documentation about place name ontology is available on the Place Name
 
 Description, specificaiton, vocabulary, and examples related to RML language can be found in this [document](https://rml.io/specs/rml/). RML processors, tools, and dependencies can be found on the following [GitHub webpage](https://github.com/RMLio). 
 
-### Helpful articles related to RDF Mapping Language(RML)
+### Useful resources
 * [RML: A Generic Language for Integrated RDF Mappings of Heterogeneous Data](https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=f0b98c4fc3a542a83349666f4073359ed56d1a17)
 * [The RML Ontology: A Community-Driven Modular Redesign After a Decade of Experience in Mapping Heterogeneous Data to RDF](https://link.springer.com/content/pdf/10.1007/978-3-031-47243-5_9.pdf)
 
