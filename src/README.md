@@ -1,5 +1,5 @@
 # Source code
-This folder contains the source code and scripts used in the RML mapping process.
+This folder contains the RML script with mapping rules. The section below includes information related to data preparation and RML mapping stages in the project workflow. 
 
 ## Data preparation
 Before executing the RML mapping script, the state and territory gazetteers underwent several steps in the data preprocessing stage.  
