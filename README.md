@@ -13,9 +13,9 @@ This repository contains source code and datasets for transparent and reproducib
 
 ## Repository structure
 
-- **data**: Folder with data from official gazetteers that was linked and enriched in the Place Names Knowledge Graph (PNKG).
+- **data**: Folder with data from official gazetteers and place names.
 - **doc**: Project documentation and examples. 
-- **lib**: External libraries and software.
+- **lib**: RML processors and dependencies.
 - **pnkg**: Documentation and a link for downloading the PNKG. 
 - **src**: RML mapping scripts and data processing codes.
 
