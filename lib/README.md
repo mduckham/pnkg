@@ -30,7 +30,7 @@ Example:
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
 
 ### PyRML
-
+Python based engine for processing RML files. 
 #### Prerequisites 
 * Python 3; and
 * Development environments (IDEs) such as Visual Studio Code(VS Code).
