@@ -49,7 +49,7 @@ Example:
 Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file. 
 
 ### Burp
-The Basic and [Unassuming RML Processor (BURP)](https://github.com/kg-construct/BURP) is a reference implementation of the new RML specification, developed from scratch without influence from previous RML implementations.
+[The Basic and Unassuming RML Processor (BURP)](https://github.com/kg-construct/BURP) is a reference implementation of the new RML specification, developed from scratch without influence from previous RML implementations.
 
 #### Prerequisites 
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
