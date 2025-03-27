@@ -28,7 +28,7 @@ Example:
 java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl
 ```
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
-In this project the knowledge graph was build using RMLmapper-java. Alternatively, other RML processors can be used to build the PNKG. See below information how to use PyRML and BURP. 
+Alternatively, other RML processors can be used to build the PNKG. See below information how to use PyRML and BURP. 
 
 ### PyRML
 Python based engine for processing RML files. 
