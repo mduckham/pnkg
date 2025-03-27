@@ -25,7 +25,6 @@ Example:
       rml:referenceFormulation ql:CSV .</pre>
 
 Modify the execution command as needed, specifying the locations of the JAR file, mapping file, and the destination for the output file. 
-
 Example:
 ```
 java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl
@@ -48,8 +47,7 @@ pip install git+https://github.com/anuzzolese/pyrml
 The following execution command should specify the relevant paths for the mapping and output files:
 ```
 python converter.py [-o RDF out file] [-f RDF out file] [-m] input
-``` 
-
+```
 Example:  
 ```
 python converter.py -o artists_places.ttl -f turtle examples/artists/artist-map.ttl
@@ -66,17 +64,14 @@ Modify the execution command as needed, specifying the locations of the mapping 
 
 #### Installation steps 
 * Clone the application from the [BURP GitHub repository](https://github.com/kg-construct/BURP).
-* To build the project and copy its dependencies, execute <br>
-```mvn package``` <br>
-```mvn dependency:copy-dependencies  ``` <br>
-You can add ```-DskipTests``` after mvn package to skip the unit tests.
+* To build the project and copy its dependencies, execute ```mvn package``` and ```mvn dependency:copy-dependencies  ```
+* Add ```-DskipTests``` after mvn package to skip the unit tests.
 
 #### Execution
 The following execution command should specify the relevant paths for the mapping and output files:
 ```
 java -jar burp.jar [-h] [-b=<baseIRI>] -m=<mappingFile> [-o=<outputFile>]
 ``` 
-
 Example: 
 ```
 java -jar burp.jar -m=mapping.ttl -o=result.nq
