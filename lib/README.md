@@ -1,7 +1,7 @@
 # RML processors and dependencies 
 
 ###  RMLmapper-java 
-[RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the [Place Name Knowledge Graph (PNKG)](pnkg). 
+[RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the [Place Name Knowledge Graph (PNKG)](semadaten/pnkg). 
 
 #### Prerequisites
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
