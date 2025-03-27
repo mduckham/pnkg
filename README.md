@@ -39,12 +39,17 @@ This repository contains source code and datasets for transparent and reproducib
 | **WA**  | [Web Link](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma) | [Official WA place names gazetteer](https://catalogue.data.wa.gov.au/dataset/geographic-names-geonoma)           | [WA.csv](data/WA/WA.csv)               | 25/03/25 |
 
 ## Place Name ontology
-The below image shows the snapshot of the classes, Object Property (OP), and Data Property (DP) of the [Geoscience Australia Place Name ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html). Defined relations in the ontology are used for RML mapping and building PNKG. 
+The below image shows the snapshot of the classes, Object Property (OP), and Data Property (DP) of the [Geoscience Australia Place Name ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/placenames.html). Defined relations in the ontology are used for RML mapping and building PNKG. In the figure below, yellow circles represent classes, blue rectangles indicate object properties, and green rectangles depict data properties.
 
 ![Place Name Ontology Diagram](doc/placename-ontology.png)
 
 ## Knowledge graph construction
+The knowledge construction workflow includes the following stages: 
 
+- data prapration
+- RML mapping and processing
+- knowledge graph generation
+- 
 The following figure illustrates the workflow of the knowledge graph construction process.
 <div align="center">
   <img src="doc/PlaceNameProcess.png" alt="Alt text" style="width:50%;">
@@ -54,5 +59,5 @@ The following figure illustrates the workflow of the knowledge graph constructio
 It is recommended to create SHACL rules and validate the RDF output for consistency and correctness.
 
 ## Limitations 
-The RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
+RML mapping file currently supports only CSV data files. Data in other formats must be converted into CSV to use the same mapping rules. Alternatively, minor modifications to the mapping rules are required.
 
