@@ -1,12 +1,33 @@
 # External libraries and dependencies 
 
 ###  RMLmapper-java 
-[RMLMapper](https://github.com/RMLio/rmlmapper-java) has been used as the RML processor to generate linked data using RML rules
+[RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the Place Name Knowledge Graph (PNKG). 
 
 #### Prerequisites for RMLmapper-java
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
 * Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
 * Apache Maven is required to be installed if you still need to install it. It can be done using [Homebrew](https://macpaw.com/how-to/install-maven-on-mac) .<br>
+
+#### Steps 
+* Clone the application from the [GitHub repository](https://github.com/RMLio/rmlmapper-java) 
+* Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```)
+  
+##### Command to execute the mapping file 
+```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
+The relevant paths of the mapping and output files should be mentioned in the command. 
+
+#### Execution
+It is required to update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
+Example:- 
+<pre><#ACTSitesSource> a rml:LogicalSource;
+      rml:source "../Data/ACT.csv";  
+      rml:referenceFormulation ql:CSV .</pre>
+
+Then, change the execution command mentioned above appropriately, mentioning the locations of the jar file, mapping file, and the location where the  Output file should be saved. <br>
+Example:-<br>
+```java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceNameMapping.ttl -o ./src/PlaceNameKGAus/out/pnkg_out.ttl```<br>
+
+The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
 
 ## Other RML processors 
 ### PyRML 
