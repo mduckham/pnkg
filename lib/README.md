@@ -12,7 +12,7 @@
 * Clone the application from the [GitHub repository](https://github.com/RMLio/rmlmapper-java) 
 * Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```)
   
-##### Command to execute the mapping file 
+#### Command to execute the mapping file 
 ```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
 The relevant paths of the mapping and output files should be mentioned in the command. 
 
