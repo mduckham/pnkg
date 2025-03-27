@@ -29,8 +29,8 @@ Example:
 
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
 
-### Other RML processors 
-### PyRML 
+### PyRML
+
 #### Prerequisites 
 * Python 3; and
 * Development environments (IDEs) such as Visual Studio Code(VS Code).
@@ -40,7 +40,7 @@ The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_o
 * Alternatively, install the pyRML package directly from GitHub using the following command: 
 pip install git+https://github.com/anuzzolese/pyrml
 
-##### Execution
+#### Execution
 The following execution command should specify the relevant paths for the mapping and output files:
 <pre>```python converter.py [-o RDF out file] [-f RDF out file] [-m] input ``` <br></pre>
 
@@ -49,19 +49,24 @@ Example:
 Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file. 
 
 ### Burp
+
 #### Prerequisites 
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
 * Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
 * Apache Maven is required to be installed if you still need to install it. It can be done using Homebrew  (https://macpaw.com/how-to/install-maven-on-mac) .<br>
-#### Steps 
-* Clone the application from the [BURP GitHub repository](https://github.com/kg-construct/BURP)
+
+#### Installation steps 
+* Clone the application from the [BURP GitHub repository](https://github.com/kg-construct/BURP).
 * To build the project and copy its dependencies, execute <br>
 ```mvn package``` <br>
 ```mvn dependency:copy-dependencies  ``` <br>
 You can add ```-DskipTests``` after mvn package to skip the unit tests.
-##### Command to execute the mapping file
-```java -jar burp.jar [-h] [-b=<baseIRI>] -m=<mappingFile> [-o=<outputFile>] ``` <br>
-Example:- 
-```java -jar burp.jar -m=mapping.ttl -o=result.nq ``` <br>
-The relevant paths of the mapping and output files should be mentioned in the command. 
-<br>
+
+#### Execution
+The following execution command should specify the relevant paths for the mapping and output files:
+<pre>```java -jar burp.jar [-h] [-b=<baseIRI>] -m=<mappingFile> [-o=<outputFile>] ``` <br></pre>
+
+Example: 
+<pre>```java -jar burp.jar -m=mapping.ttl -o=result.nq ``` <br></pre>
+Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file.  
+
