@@ -8,17 +8,16 @@
 * Development environments (IDEs) such as Visual Studio Code (VS Code), Eclipse IDE . <br>
 * Apache Maven is required to be installed if you still need to install it. It can be done using [Homebrew](https://macpaw.com/how-to/install-maven-on-mac) .<br>
 
-#### Steps 
-* Clone the application from the [GitHub repository](https://github.com/RMLio/rmlmapper-java) 
-* Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```)
+#### Installation steps 
+* Clone the application from the [GitHub repository](https://github.com/RMLio/rmlmapper-java).  
+* Build the application using the given command in the ReadMe file  (``` mvn install -DskipTests=true```  or  ```mvn test Dtest=!Mapper_OracleDB_Test```).
   
-#### Command to execute the mapping file 
-```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
-The relevant paths of the mapping and output files should be mentioned in the command. 
-
 #### Execution
-It is required to update the target location of each state's data file in the RML mapping file to reflect the correct file paths saved on your local machine.
-Example:- 
+```java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl``` <br>
+The command should specify the relevant paths for the mapping and output files.
+Important: The target location of each data source file in the RML mapping file must be updated to match the correct file paths on your local machine.
+
+Example: 
 <pre><#ACTSitesSource> a rml:LogicalSource;
       rml:source "../Data/ACT.csv";  
       rml:referenceFormulation ql:CSV .</pre>
