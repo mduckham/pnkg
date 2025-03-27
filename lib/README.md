@@ -1,4 +1,4 @@
-# External libraries and dependencies 
+# RML processors and dependencies 
 
 ###  RMLmapper-java 
 [RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the Place Name Knowledge Graph (PNKG). 
