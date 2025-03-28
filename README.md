@@ -9,7 +9,7 @@ This repository contains source code and datasets for transparent and reproducib
 - [Composite Gazetteer of Australia](https://placenames.fsdf.org.au/);
 - [Data Product Specification for the Composite Gazetteer of Australia](data/CompositeGazetteerDPS.pdf);
 - [Linked Data API codebase for National Composite Gazetteer of Australia](https://github.com/GeoscienceAustralia/placenames-dataset); and
-- [RML tools](https://rml.io/tools/);
+- [RML tools](https://rml.io/tools/).
 
 ## Repository structure
 
@@ -55,9 +55,14 @@ The following figure illustrates the workflow of the knowledge graph constructio
   <img src="doc/PlaceNameProcess.png" alt="Alt text" style="width:50%;">
 </div>
 
-## Recommendations
-It is recommended to create SHACL rules and validate the RDF output for consistency and correctness.
+## Place Name Knowledge Graph (PNKG)
+This folder contains a link to download the [Australian Place Names Knowledge Graph (PNKG)](http://gkl.rmit.melbourne/kg/pnkg.20250325.ttl), which integrates gazetteer data for all Australian states and territories. The figure below presents a snapshot graph of a section of the PNKG. 
 
-## Limitations 
+![Place Name Knowldge Grpah](PNKG.png)
+
+## Further work
 The RML mapping and processing stage supports only data in CSV format. To use the same mapping rules, data in other formats must be converted to CSV. Additionally, minor modifications to the mapping rules may be required.
+
+Further work under consideration also includes development of SHACL rules and validate the RDF output for consistency and correctness.
+
 
