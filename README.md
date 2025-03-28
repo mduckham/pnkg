@@ -1,6 +1,6 @@
-  # semadaten: Semantic Data Enrichment
+  # pnkg: Australian placenames knowledge graph
 
-This repository contains source code and datasets for transparent and reproducible semantic data enrichment of Australian place names data. It is developed by the [Geographic Knowledge Lab (GKL)](https://gkl.rmit.melbourne/).
+This repository contains source code and datasets for transparent and reproducible semantic data enrichment of Australian place names data. It is developed by the [Geographic Knowledge Lab (GKL)](https://gkl.rmit.melbourne/). The approach uses [RML](https://rml.io/specs/rml/) (RDF mapping language) to create a national placenames knowledge graph based on the [Geoscience Australia Placenames Ontology](https://geoscienceaustralia.github.io/Placenames-Ontology/) from the publicly available state-based placenames tabular (csv) data. 
 
 ## Key resources 
 
@@ -16,7 +16,6 @@ This repository contains source code and datasets for transparent and reproducib
 - **data**: Folder with data from official gazetteers and place names.
 - **doc**: Project documentation and examples. 
 - **lib**: RML processors and dependencies.
-- **pnkg**: Documentation and a link for downloading the PNKG. 
 - **src**: RML mapping scripts and data processing codes.
 
 ## Data
