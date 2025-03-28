@@ -64,4 +64,5 @@ The RML mapping and processing stage supports only data in CSV format. To use th
 
 Further work under consideration also includes development of SHACL rules and validate the RDF output for consistency and correctness.
 
-
+## Acknowledgments
+This development of pnkg was led by Nayomi Ranamuka and Nenad Radosevic, with contributions from all of the researchers at the [RMIT Geographic Knowledge Lab](http://gkl.rmit.melbourne/about): Alexis Horde Vo, Prawal Lohani, Amina Hossein, Mohammad Kazemi Beydokhti, Ozzy Yaguang Tao, and GKL Director [Prof Matt Duckham](https://academics.rmit.edu.au/matt-duckham). 
