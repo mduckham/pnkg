@@ -46,7 +46,7 @@ The below image shows the snapshot of the classes, Object Property (OP), and Dat
 ## Knowledge graph construction
 The knowledge construction workflow includes the following stages: 
 
-- data prapration;
+- data preparation;
 - RML mapping and processing; and
 - knowledge graph generation.
   
