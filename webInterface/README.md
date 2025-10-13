@@ -33,6 +33,9 @@
      ```
 ## Web Application Architecture
 The following figure illustrates the architecture design of the Web Application deployed on AWS cloud environment.
-<img src="systemArchitecture.png" alt="Web Application Architecture" style="width:80%; max-width:800px;" />
+<div align="center">
+<img src="systemArchitecture.png" alt="Web Application Architecture" style="width:80%; max-width:800px;">
+<p> <strong> Web Application Architecture Diagram </strong></p>
+</div>
 
 The web server hosts both the .pmtiles file (used for serving vector tiles) and the indexPNKGweb.html file. The HTML file serves as the interface to the web application, initializing the client-side interface and rendering the map by accessing the .pmtiles file. Based on user selections, such as choosing a specific geometry on the map, the application retrieves the geometry ID and sends it to the GeoSPARQL Fuseki server via SPARQL queries to obtain additional contextual information enriched in the Knowledge Graph. Subsequently, these semantic data will be displayed in the web application interface.
