@@ -7,7 +7,7 @@
    
 2. Generate MBTiles
 
-   Subsequently, the generated GeoJSON file was processed using Tippecanoe(https://github.com/mapbox/tippecanoe?tab=readme-ov-file), a command-line tool for creating vector tilesets from GeoJSON data. The following command was executed:
+   Subsequently, the generated GeoJSON file was processed using [Tippecanoe](https://github.com/mapbox/tippecanoe?tab=readme-ov-file), a command-line tool for creating vector tilesets from GeoJSON data. The following command was executed:
    
     To install tippecanoe
       ``` 
