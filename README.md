@@ -49,9 +49,9 @@ The knowledge construction workflow includes the following stages:
 - RML mapping and processing; and
 - knowledge graph generation.
   
-The following figure illustrates the workflow of the knowledge graph construction process.
+The following figure illustrates the semantic enrichment process.
 <div align="center">
-  <img src="doc/PlaceNameProcess.png" alt="Alt text" style="width:100%;">
+  <img src="doc/PlaceName_sde_process.png" alt="Alt text" style="width:55%;">
 </div>
 
 ## Place Name Knowledge Graph (PNKG)
