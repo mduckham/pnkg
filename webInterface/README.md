@@ -38,7 +38,7 @@ The following figure illustrates the architecture design of the Web Application 
 <p> <strong> Web Application Architecture Diagram </strong></p>
 </div>
 
-A persistent triple store was created using the turtle file of the knowledge graph into Apache Jena TDB. The GeoSPARQL Fuseki server communicates with this store to provide a SPARQL endpoint for querying and managing the data.
+A persistent triple store was created by loading the turtle file of the knowledge graph into Apache Jena TDB. The GeoSPARQL Fuseki server communicates with this store to provide a SPARQL endpoint for querying and managing the data.
 
 The web server hosts both the .pmtiles file (used for serving vector tiles) and the indexPNKGweb.html file. The HTML file serves as the interface to the web application, initializing the client-side interface and rendering the map by accessing the .pmtiles file. Based on user selections, such as choosing a specific geometry on the map, the application retrieves the geometry ID and sends it to the GeoSPARQL Fuseki server via SPARQL queries to obtain additional contextual information enriched in the Knowledge Graph. Subsequently, these semantic data will be displayed in the web application interface.
 
