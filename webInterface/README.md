@@ -1,4 +1,4 @@
-# Australian placenames knowledge graph
+# Web-Based Visualization for Australian placenames knowledge graph
 
 ## Transforming Knowledge Graph Geospatial Data for Web-Based Visualization
 1. Transform the knowledge graph (TTL) file into a GeoJSON file
