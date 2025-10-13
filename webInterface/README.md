@@ -5,7 +5,7 @@
    
    The knowledge graph represented in Turtle (TTL) format was converted into a GeoJSON format containing only the geometric data. The resulting GeoJSON includes two fields: "id", which represents the URI of the geometry, and "wkt", which stores the geometry value in Well-Known Text (WKT) format.
    
-2. Generate MBTiles
+2. Generate MBTiles file
 
    Subsequently, the generated GeoJSON file was processed using [Tippecanoe](https://github.com/mapbox/tippecanoe?tab=readme-ov-file), a command-line tool for creating vector tilesets from GeoJSON data. The following command was executed:
    
@@ -25,7 +25,7 @@
         placenames.geojson
       ```
 
-3. Convert MBTiles to PMTiles
+3. Generate PMTiles file using MBTiles file
    
    Since, PMTiles can be hosted directly on an AWS web server without needing a dedicated tile server, PMTiles file was created using the MBTiles file.
      ```
