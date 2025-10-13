@@ -33,3 +33,5 @@
      ```
 ## Web Application Architecture
 The following figure illustrates the architecture design of the Web Application deployed on AWS clod environment.
+![Web Application Architecture](systemArchitecture.png)
+
