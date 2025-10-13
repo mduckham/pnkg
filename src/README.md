@@ -18,6 +18,7 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
   - A new column (GAZETTE DATE FORMATTED) was added to record the converted date after removing unnecessary text segments.
   - Added a new column to record the state's abbreviation (NSW)
   - Added a new column to record the most recent gazzete date ("MOST_RECENT_GAZETTE_DATE")
+  - Removed invalid points (NaN, NaN)
 - ACT, TAS, NT
   - Added a new column to record each state's abbreviation (ACT,TAS, NT)
 - SA (Sites)
@@ -28,6 +29,7 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
   - Added a new column to record “status” as gazetted
 - VIC (Places)
   - Added “IsIndigenous” column; for example, if the "Aboriginal Origins" column contains "Aboriginal Name," then the "IsIndigenous" column is set to TRUE; otherwise, it is set to FALSE.
+  - Removed invalid points (NaN, NaN)
 
 ## RML mapping and processing
 
@@ -48,4 +50,5 @@ java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceN
 ```
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
 In this project, the knowledge graph was built using [RMLmapper-java](https://github.com/mduckham/semadaten/blob/main/lib/README.md). Alternatively, other RML processors, such as [PyRML and BURP](https://github.com/mduckham/semadaten/blob/main/lib/README.md), can be used to construct the PNKG. 
+
 
