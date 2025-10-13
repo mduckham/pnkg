@@ -26,6 +26,7 @@
       ```
 
 3. Convert MBTiles to PMTiles
+   
    Since, PMTiles can be hosted directly on an AWS web server without needing a dedicated tile server, PMTiles file was created using the MBTiles file.
      ```
      pmtiles convert placenames.mbtiles placenames.pmtiles
