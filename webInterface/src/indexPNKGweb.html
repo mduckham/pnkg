@@ -1,0 +1,899 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Australian Place Name Knowledge Graph</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.2.0/dist/maplibre-gl.css"/>
+  <style>
+    html, body { height: 100%; margin: 0; }
+
+ /* ===== Banner ===== */
+    #banner {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* center title */
+      background: #263238;
+      color: white;
+      padding: 10px 20px;
+      font-family: system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      overflow: visible;       /* allow logo to overflow outside */
+    }
+
+#banner img {
+  max-height: 40px;        /* fits nicely inside 60px banner */
+  width: auto;             /* keep aspect ratio */
+  margin-right: 12px;
+  flex-shrink: 0;          /* prevent logo from squishing */
+}
+    #banner-title {
+      flex: 1;
+      text-align: center;
+    }
+
+
+ /* ===== App layout ===== */
+    #app {
+      height: calc(100% - 60px); /* subtract banner height */
+      display: grid;
+      grid-template-columns: 1fr 440px; /* map grows, graph fixed */
+      grid-template-rows: 100%;
+      }
+
+    #map { height: 100%; width: 100%; }
+
+
+
+   /* ===== Right panel ===== */
+    #graphPanel {
+      border-left: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      min-width: 360px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      background: #fff;
+    }
+
+    #graphHeader {
+      font: 600 14px/1.2 system-ui, sans-serif;
+      padding: 10px 12px;
+      background: #fafafa;
+      border-bottom: 1px solid #eee;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    #graphHeader small { color: #777; font-weight: 400; }
+    .pill { display:inline-block; padding:2px 6px; border-radius:999px; font-size:11px; background:#f0f0f0; }
+    .legend { margin-left:auto; display:flex; gap:10px; font-size:11px; color:#555; }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; border:1px solid #ddd; }
+    .dot.place { background:#add8e6; border-color:#4e79a7; }
+    .dot.placename { background:#90ee90; border-color:#59a14f; }
+    .dot.category { background:#e1bee7; border-color:#9c27b0; }
+    .dot.literal { background:#f5f5f5; border-color:#ccc; }
+    .dot.geometry { background:#ffc896; border-color:#ff7043; }
+    .dot.metaData { background:#ffff00; border-color:#cccc00; }
+/**    .dot.selected { background:#ff7043; border-color:#ffccbc; }**/
+
+    #graph { position: relative; height: 100%; width: 100%; }
+    #graphInfo {
+
+
+
+
+      padding: 10px 20px;
+      font: 12px/1.5 system-ui, sans-serif;
+      background: #ffffcc;
+      border-top: 1px solid #eee;
+      white-space: normal;
+      overflow-y: auto;
+     /** max-height: none;**/
+height: 4.5em; /* ≈ two lines (1.5 * 2 = 3em total line height) */
+      margin-top: auto; /* push to bottom */
+    }
+
+    /* Popup width + tidy list */
+    .maplibregl-popup-content { max-width: 380px; font-size: 12px; }
+    .maplibregl-popup-content ul { margin:0; padding-left:16px; }
+  </style>
+
+<style>  
+  .field-placenameInstance::marker { color: #90ee90;font-size: 1.65em; /* Increase bullet size */ }
+  .field-placename::marker { color: #66CC66; font-size: 1.65em; /* Increase bullet size */}
+  .field-status::marker { color: #66CC66; font-size: 1.65em; /* Increase bullet size */}
+  .field-gazzettedData::marker { color: #66CC66;font-size: 1.65em; /* Increase bullet size */ }   
+  .field-classification::marker { color: #e1bee7; font-size: 1.65em; /* Increase bullet size */} 
+  .field-metaDataLocation::marker { color: #FCD12A; font-size: 1.65em; /* Increase bullet size */}
+  .field-metaDataPublisher::marker { color: #FCD12A; font-size: 1.65em; /* Increase bullet size */}
+</style>
+
+</head>
+<body>
+
+  <!-- Banner -->
+  <div id="banner">
+<a href="https://gkl.rmit.melbourne/" target="_blank">
+    <img src="gkl-trans.png" alt="Logo"> </a>@RMIT
+    <div id="banner-title">Australian Place Name Knowledge Graph</div>
+  </div>
+
+<div id="app">
+  <div id="map"></div>
+  <aside id="graphPanel">
+    <div id="graphHeader">
+      Place Name Knowledge Graph Explorer <small></small>
+      <span class="pill"></span>
+      <div class="legend">
+        <span><span class="dot place"></span> Place</span>
+        <span><span class="dot placename"></span> PlaceName</span>
+        <span><span class="dot category"></span> Classification</span>
+        <span><span class="dot geometry"></span> Geometry</span>
+        <span><span class="dot metaData"></span> MetaData</span>
+     <button id="zoomIn">+</button>
+     <button id="zoomOut">−</button>
+     <button id="resetZoom">⟳</button>
+      </div>
+    </div>
+    <div id="graph"></div>
+    <div id="graphInfo">Click on the geometry node to explore its position on the map…</div>
+  </aside>
+</div>
+
+<!-- Libraries -->
+<script src="https://unpkg.com/maplibre-gl@5.2.0/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/pmtiles@latest/dist/pmtiles.js"></script>
+<script src="https://unpkg.com/cytoscape@3.30.3/dist/cytoscape.min.js"></script>
+
+<script>
+/* ===================== Config ===================== */
+const MAPTILER_KEY = "FVDxNKsmcNZloMSvS9nw";                    // ← your MapTiler key
+const PMTILES_HTTP = "placenames20250911.pmtiles";                // ← your PMTiles file (HTTP path)
+const PMTILES_URL  = "pmtiles://placenames20250911.pmtiles";      // ← pmtiles:// URL registered via protocol
+const FUSEKI_URL   = "http://54.253.186.204:3030/geo/";              // ← Apache Jena Fuseki endpoint
+
+/* ===================== Helpers ===================== */
+const protocol = new pmtiles.Protocol();
+maplibregl.addProtocol("pmtiles", protocol.tile);
+
+function pickNameField(fields) {
+  const c = ["name","NAME","name_en","label","Name","name:en"];
+  return c.find(f => fields && Object.prototype.hasOwnProperty.call(fields, f)) || null;
+}
+function shortPred(uri) {
+  try { const u=new URL(uri); return u.hash?u.hash.substring(1):u.pathname.split("/").pop(); }
+  catch { return uri.split(/[\/#]/).pop()||uri; }
+}
+function preferLabelFromURI(uri) {
+  try { const u=new URL(uri); return decodeURIComponent(u.pathname.split("/").pop() || u.href); }
+  catch { return uri.split(/[\/#]/).pop() || uri; }
+}
+function cssEscape(s) { return String(s).replace(/(["\\])/g, "\\$1"); }
+function approximateCenter(feature) {
+  try {
+    const g = feature.geometry;
+    if (!g) return null;
+    if (g.type === "Point") return g.coordinates.slice(0,2);
+    const bounds = new maplibregl.LngLatBounds();
+    (function walk(coords){
+      if (typeof coords[0] === "number") bounds.extend(coords);
+      else coords.forEach(walk);
+    })(g.coordinates);
+    return bounds.getCenter().toArray();
+  } catch { return null; }
+}
+
+/* ================ Cytoscape (Knowledge Graph) ================ */
+const cy = cytoscape({
+  container: document.getElementById("graph"),
+  elements: [],
+layout: {
+  name: "cose",          // or "breadthfirst" / "fcose"
+  nodeRepulsion: 12000,   // push nodes apart
+  idealEdgeLength: 1000,  // ensures edges are long enough for labels
+  edgeElasticity: 1300,
+  gravity: 80,
+  numIter: 1000,
+  animate: true
+},
+  wheelSensitivity: 0.25,
+  style: [
+    { selector: "node[type='place']", style: {
+      "background-color": "#add8e6", "label": "data(label)",
+      "color": "#000", "font-size": 6, "border-width": 0.5, "border-color": "#4e79a7",
+      "shape": "ellipse", "width": 35,"height": 35,"padding": "3px",
+      "text-valign": "center",     //  vertically center text inside node
+      "text-halign": "center",     // horizontally center text inside node
+      "text-wrap": "wrap",
+      "text-max-width": 33        // prevents overflow outside ellipse
+
+    }},
+    { selector: "node[type='placename']", style: {
+      "background-color": "#90ee90", "label": "data(label)",
+      "color": "#000", "font-size": 6, "border-width": 0.5, "border-color": "#59a14f",
+      "shape": "ellipse", "width": 35,"height": 35,"padding": "3px",
+      "text-valign": "center",     // vertically center text inside node
+      "text-halign": "center",     //horizontally center text inside node
+      "text-wrap": "wrap",
+      "text-max-width": 33        // prevents overflow outside ellipse
+    }},
+    { selector: "node[type='category']", style: {
+      "background-color": "#e1bee7", 
+
+      "label": function(ele){
+      let text = ele.data("label");
+      if (text.length > 30) {    // adjust length threshold
+        return text.substring(0, 30) + "...";
+      }
+      return text;
+    },
+      "color": "#000", "font-size": 6, "border-width": 0.5, "border-color": "#9c27b0",
+      "shape": "ellipse", "width": 35,"height": 35,"padding": "3px",
+      "text-valign": "center",     //  vertically center text inside node
+      "text-halign": "center",     //  horizontally center text inside node
+      "text-wrap": "wrap",            // allows multi-line if too long
+      "text-max-width": 33            // prevents overflow outside ellipse
+    }},
+    { selector: "node[literal]", style: {
+      "label": function(ele){
+      let text = ele.data("label");
+      if (text.length > 30) {    // adjust length threshold
+        return text.substring(0, 30) + "...";  
+      }
+      return text;
+    },
+      "background-color": "#f5f5f5",
+      "border-color": "#ccc",
+      "color": "#000", "font-size": 6,
+      "shape": "ellipse", "width": 37,"height": 37,"padding": "3px",
+      "text-valign": "center",     //  vertically center text inside node
+      "text-halign": "center",     //  horizontally center text inside node
+      "text-wrap": "wrap",         // allows multi-line if too long
+      "text-max-width": 33        // prevents overflow outside ellipse
+
+
+    }},
+    
+ { selector: "node[type='geometry']", style: {
+      "background-color": "#ffc896", "label": "data(label)",
+      "color": "#000", "font-size": 6, "border-width": 0.5, "border-color": "#ff7043",
+      "shape": "ellipse", "width": 35,"height": 35,"padding": "3px",
+      "text-valign": "center",     // vertically center text inside node
+      "text-halign": "center",     //  horizontally center text inside node
+      "text-wrap": "wrap",            // allows multi-line if too long
+      "text-max-width": 33,        // prevents overflow outside ellipse
+      "cursor": "pointer"   //  makes cursor a hand when hovering
+    }},
+
+ { selector: "node[type='metaData']", style: {
+      "background-color": "#ffff00",
+      "label": "Place Name Meta Data",
+      "text-valign": "center",     //  vertically center text inside node
+      "text-halign": "center",     //  horizontally center text inside node
+      "text-wrap": "wrap",            // allows multi-line if too long
+      "text-max-width": 33,            // prevents overflow outside ellipse
+
+      "color": "#000", "font-size": 6, "border-width": 0.5, "border-color": "#cccc00",
+      "shape": "ellipse", "width": 35,"height": 35,"padding": "3px"
+    }},
+
+    { selector: "edge", style: {
+      "curve-style": "bezier", "width": 0.5,
+      "line-color": "#000", "target-arrow-color": "#000", "target-arrow-shape": "triangle", "arrow-scale": 0.6,    
+      "label": "data(label)", "font-size": 6, "text-rotation": "autorotate",
+      "text-halign": "center",
+      "text-background-opacity": 0.7, "text-background-color": "#fff", "text-background-padding": 2, "text-margin-y": -7,
+      "text-margin-x": 4,              // centered along edge
+      "target-distance-from-node": 2,
+      "source-distance-from-node": 2
+   //**   "edge-text-rotation": "none"  // prevents slanted labels on curved edges
+
+    }}
+  ]
+});
+
+
+ // Zoom control buttons
+ document.getElementById("zoomIn").onclick  = () => cy.zoom(cy.zoom() * 1.2);
+ document.getElementById("zoomOut").onclick = () => cy.zoom(cy.zoom() * 0.8);
+ document.getElementById("resetZoom").onclick = () => cy.fit();
+
+
+const graphInfo = document.getElementById("graphInfo");
+
+// Hover → show full URI/literal in info bar
+cy.on("mouseover", "node", e => {
+  const n = e.target;
+  const full = n.data("uri") || n.data("label");
+  graphInfo.innerHTML = `<strong>Node:</strong> ${full}`;
+});
+/** cy.on("mouseout", "node", () => { **/
+/**  graphInfo.innerHTML = "Select a place to explore its relationships…";});**/
+
+// New OPTIONAL: Also update on click (so touch devices work too)
+cy.on("tap", "node", e => {
+  const n = e.target;
+  const full = n.data("uri") || n.data("label");
+  graphInfo.innerHTML = `<strong>Node:</strong> ${full}`;
+});
+
+
+//New  Only apply to Geometry nodes
+cy.on('mouseover', "node[type='geometry']", function () {
+  cy.container().style.cursor = 'pointer';   // hand cursor
+});
+
+cy.on('mouseout', "node[type='geometry']", function () {
+  cy.container().style.cursor = 'default';   // back to normal
+});
+//
+
+
+// Reset only when mouse leaves BOTH graph and info panel
+document.addEventListener("mousemove", e => {
+  const graphBounds = cy.container().getBoundingClientRect();
+  const infoBounds = graphInfo.getBoundingClientRect();
+  const insideGraph = (
+    e.clientX >= graphBounds.left && e.clientX <= graphBounds.right &&
+    e.clientY >= graphBounds.top && e.clientY <= graphBounds.bottom
+  );
+  const insideInfo = (
+    e.clientX >= infoBounds.left && e.clientX <= infoBounds.right &&
+    e.clientY >= infoBounds.top && e.clientY <= infoBounds.bottom
+  );
+
+  if (!insideGraph && !insideInfo) {
+    graphInfo.innerHTML = "Click on the geometry node to explore its position on the map…";
+  }
+});
+
+
+/* ===================== SPARQL ===================== */
+async function runSparql(query) {
+  const res = await fetch(FUSEKI_URL, {
+    method: "POST",
+    headers: { "Accept": "application/sparql-results+json", "Content-Type": "application/x-www-form-urlencoded" },
+    body: `query=${encodeURIComponent(query)}`
+  });
+  if (!res.ok) throw new Error(`Fuseki ${res.status}`);
+  return res.json();
+}
+
+/* Popup query (as you specified) */
+async function queryFusekiHTML(id) {
+  if (!id) return `<em>No ID IRI found.</em>`;
+  const query = `
+PREFIX pn:  <http://linked.data.gov.au/def/placenames/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+prefix pnkg: <http://geosensor.net/ns/pnkg#>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix loci: <http://linked.data.gov.au/def/loci#>
+prefix dcat: <http://www.w3.org/ns/dcat#>
+SELECT ?name ?category ?plnm ?dateGazetted ?origin ?status 
+(REPLACE(STRAFTER(STR(?category), "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/"), "%20", " ") AS ?categoryLabelbkp)
+(REPLACE(REPLACE(
+      REPLACE(REPLACE(REPLACE(
+            STRAFTER(STR(?category), "http://pid.geoscience.gov.au/def/voc/ga/PlaceType/"),
+            "%20", " "),"%28", "("),"%29", ")"),"%2C", ","),"%2F", "/") AS ?categoryLabel)
+
+(REPLACE(STRAFTER(STR(?status), "http://geosensor.net/ns/pnkg/"), "%20", " ") AS ?statusLabel)
+?dateReleased
+?dateModified
+?alternativeName
+?previousName
+?location
+?publisher
+?webPage
+
+WHERE {
+  ?loc   geo:asWKT ?geom .
+  ?place geo:hasGeometry ?loc .
+  ?place pn:hasPlaceClassification ?category .
+  ?place pn:hasPlaceName ?plnm .
+  ?plnm  pn:name ?name .
+  ?plnm loci:isMemberOf ?metaData .
+  OPTIONAL { ?plnm pn:status ?status .}
+  OPTIONAL { ?plnm pn:dateGazetted ?dateGazetted .}
+  OPTIONAL { ?plnm pnkg:origin ?origin .}
+  OPTIONAL { ?plnm pn:dateReleased ?dateReleased .}
+  OPTIONAL { ?plnm pn:dateModified ?dateModified .}
+  OPTIONAL { ?plnm pnkg:alternativeName ?alternativeName .}
+  OPTIONAL { ?plnm pnkg:previousName ?previousName .}
+  OPTIONAL { ?metaData dcterms:Location ?location .}
+  OPTIONAL { ?metaData dcterms:publisher ?publisher .}
+  OPTIONAL { ?metaData dcat:landingPage ?webPage .}
+  OPTIONAL { ?metaData dcterms:description ?metadataDescription .}
+
+  FILTER(?loc = <${id}>)
+}`;
+  try {
+    const data = await runSparql(query);
+    const b = data.results?.bindings?.[0];
+    if (!b) return `<em>No results for this feature.</em>`;
+    const details = []; 
+    if (b.name)         details.push(`<li class="field-placename"><strong>Name:</strong> ${b.name.value}</li>`);
+    if (b.category)     details.push(`<li class="field-classification"><strong>Classification:</strong> ${toTitleCase(b.categoryLabel.value)}</li>`);
+    if (b.status) details.push(`<li class="field-status"><strong>Status:</strong> ${toTitleCase(b.statusLabel.value)}</li>`);
+
+
+//if (b.dateGazetted) {
+//  const val = b.dateGazetted.value;
+//   Exclude empty, "0000-00-00", or "0000/00/00"
+//  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+//    details.push(`<li class="field-placename"><strong>Date Gazetted:</strong> ${val}</li>`);
+//  }
+//}
+
+
+if (b.dateGazetted) {
+  const val = b.dateGazetted.value.trim();
+
+  // Exclude empty, "0000-00-00", or "0000/00/00"
+  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+
+    let displayVal = val;
+
+    // Detect DD/MM/YYYY and convert → YYYY-MM-DD
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(val)) {
+      const [day, month, year] = val.split('/');
+      displayVal = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // Push to details (display always in YYYY-MM-DD style)
+    details.push(`<li class="field-placename"><strong>Date Gazetted:</strong> ${displayVal}</li>`);
+  }
+}
+
+//if (b.dateReleased) {
+//  const val = b.dateReleased.value;
+//  // Exclude empty, "0000-00-00", or "0000/00/00"
+//  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+//    details.push(`<li class="field-placename"><strong>Date Released:</strong> ${val}</li>`);
+//  }
+//}
+
+if (b.dateReleased) {
+  const val = b.dateReleased.value.trim();
+
+  // Exclude empty, "0000-00-00", or "0000/00/00"
+  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+
+    let displayVal = val;
+
+    // Detect DD/MM/YYYY and convert → YYYY-MM-DD
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(val)) {
+      const [day, month, year] = val.split('/');
+      displayVal = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // Push formatted value into details list
+    details.push(`<li class="field-placename"><strong>Date Released:</strong> ${displayVal}</li>`);
+  }
+}
+
+
+
+//if (b.dateModified) {
+//  const val = b.dateModified.value;
+//  // Exclude empty, "0000-00-00", or "0000/00/00"
+//  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+//    details.push(`<li class="field-placename"><strong>Date Modified:</strong> ${val}</li>`);
+//  }
+//}
+
+
+
+if (b.dateModified) {
+  const val = b.dateModified.value.trim();
+
+  // Exclude empty, "0000-00-00", or "0000/00/00"
+  if (val && !/^0{4}[-\/]0{2}[-\/]0{2}$/.test(val)) {
+
+    let displayVal = val;
+
+    // Detect DD/MM/YYYY → convert to YYYY-MM-DD
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(val)) {
+      const [day, month, year] = val.split('/');
+      displayVal = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // Add formatted date to details
+    details.push(`<li class="field-placename"><strong>Date Modified:</strong> ${displayVal}</li>`);
+  }
+}
+	
+    if (b.origin) details.push(`<li class="field-placename"><strong>Origin:</strong> ${b.origin.value}</li>`);
+    if (b.alternativeName) details.push(`<li class="field-placename"><strong>Alternative Name:</strong> ${b.alternativeName.value}</li>`);
+    if (b.previousName) details.push(`<li class="field-placename"><strong>Previous Name:</strong> ${b.previousName.value}</li>`);
+    if (b.location) details.push(`<li class="field-metaDataLocation"><strong>Location:</strong> ${b.location.value}</li>`);
+    if (b.publisher) details.push(`<li class="field-metaDataPublisher"><strong>Publisher:</strong> ${b.publisher.value}</li>`);
+    if (b.plnm) details.push(`<li class="field-placenameInstance"><strong>PlaceName instance:</strong> <code style="word-break:break-all">${b.plnm.value}</code></li>`);
+
+    return `<strong>Place</strong><ul>${details.join("")}</ul>`;
+  } catch (err) {
+    return `<em>Fuseki error: ${err.message}</em>`;
+  }
+}
+
+
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+
+async function loadGraphFor(geomIri) {
+  const q = `
+PREFIX pn:  <http://linked.data.gov.au/def/placenames/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix loci: <http://linked.data.gov.au/def/loci#>
+prefix dcat: <http://www.w3.org/ns/dcat#>
+
+SELECT ?place ?name ?category ?plnm ?dateGazetted ?loc ?geom ?metaData ?location ?publisher ?status
+(REPLACE(STRAFTER(STR(?status), "http://geosensor.net/ns/pnkg/"), "%20", " ") AS ?statusLabel)
+  WHERE {
+  ?loc   geo:asWKT ?geom .
+  ?place geo:hasGeometry ?loc .
+  ?place pn:hasPlaceClassification ?category .
+  ?place pn:hasPlaceName ?plnm .
+  ?plnm  pn:name ?name .
+  ?plnm loci:isMemberOf ?metaData .
+  OPTIONAL { ?plnm pn:status ?status .}
+  OPTIONAL { ?plnm pn:dateGazetted ?dateGazetted . }
+  OPTIONAL { ?metaData dcterms:Location ?location .}
+  OPTIONAL { ?metaData dcterms:publisher ?publisher .}
+
+  FILTER(?loc = <${geomIri}>)
+}`;
+
+  let rows = [];
+  try {
+    rows = (await runSparql(q)).results?.bindings ?? [];
+  } catch (err) {
+    graphInfo.innerHTML = `SPARQL error: ${err.message}`;
+    return;
+  }
+
+  cy.elements().remove();
+  if (!rows.length) {
+    cy.add({ data:{ id: geomIri, uri: geomIri, label: preferLabelFromURI(geomIri), type:"geometry", selectedNode:true } });
+    cy.layout({ name:"cose", animate:true }).run();
+    return;
+  }
+
+  const seen = new Set();
+  const r0 = rows[0];
+  const place = r0.place.value;
+  const placeName = r0.plnm.value;
+
+  //Base Place node
+  cy.add({ data:{ id: place, uri: place, label: "Place : "+ preferLabelFromURI(place), type:"place", selectedNode:false } });
+  seen.add(place);
+
+  for (const r of rows) {
+    //  Geometry instance
+    if (r.loc) {
+      const loc = r.loc.value;
+      if (!seen.has(loc)) {
+        cy.add({ data:{ id: loc, uri: loc, label: "Geometry : "+ preferLabelFromURI(loc), type:"geometry" } });
+        seen.add(loc);
+      }
+      cy.add({ data:{ id: place + "-geom-" + loc, source: place, target: loc, label: "geo:hasGeometry" } });
+
+      // Geometry literal (asWKT)
+      if (r.geom) {
+        const litGeom = loc + "::wkt";
+        if (!seen.has(litGeom)) {
+          cy.add({ data:{ id: litGeom, label: r.geom.value, literal: true } });
+          seen.add(litGeom);
+        }
+        cy.add({ data:{ id: loc + "-wkt", source: loc, target: litGeom, label: "geo:asWKT" } });
+      }
+    }
+
+    // Classification
+    if (r.category) {
+      const cat = r.category.value;
+      if (!seen.has(cat)) {
+        cy.add({ data:{ id: cat, uri: cat, label: preferLabelFromURI(cat), type:"category" } });
+        seen.add(cat);
+      }
+      cy.add({ data:{ id: place + "-cat-" + cat, source: place, target: cat, label: "pn:hasPlaceClassification" } });
+    }
+
+    //  Placename instance
+    if (r.plnm) {
+      const plnm = r.plnm.value;
+      if (!seen.has(plnm)) {
+        cy.add({ data:{ id: plnm, uri: plnm, label: "Place Name : " + preferLabelFromURI(plnm), type:"placename" } });
+        seen.add(plnm);
+      }
+      cy.add({ data:{ id: place + "-plnm-" + plnm, source: place, target: plnm, label: "pn:hasPlaceName" } });
+
+      // Placename literals
+      if (r.name) {
+        const litName = plnm + "::name";
+        if (!seen.has(litName)) {
+          cy.add({ data:{ id: litName, label: r.name.value, literal: true } });
+          seen.add(litName);
+        }
+        cy.add({ data:{ id: plnm + "-name", source: plnm, target: litName, label: "pn:name" } });
+      }
+
+      if (r.dateGazetted && !/^0+$/.test(r.dateGazetted.value)) {
+        const litDate = plnm + "::dateGazetted";
+        if (!seen.has(litDate)) {
+          cy.add({ data:{ id: litDate, label: r.dateGazetted.value, literal: true } });
+          seen.add(litDate);
+        }
+        cy.add({ data:{ id: plnm + "-date", source: plnm, target: litDate, label: "pn:dateGazetted" } });
+      }
+      
+  //    if (r.status) {
+  //      const litStatus = plnm + "::status";
+  //      if (!seen.has(litStatus)) {
+  //        cy.add({ data:{ id: litStatus, label: r.statusLabel.value, literal: true } });
+  //        seen.add(litStatus);
+  //      }
+  //      cy.add({ data:{ id: plnm + "-status", source: plnm, target: litStatus, label: "pn:status" } });
+   //   }
+    
+
+    }
+
+    //  MetaData instance
+    if (r.metaData) {
+      const metaData = r.metaData.value;
+      if (!seen.has(metaData)) {
+        cy.add({ data:{ id: metaData, uri: metaData, label: preferLabelFromURI(metaData), type:"metaData" } });
+        seen.add(metaData);
+      }
+      cy.add({ data:{ id: placeName + "-metaData-" + metaData, source: placeName, target: metaData, label: "loci:isMemberOf" } });
+
+      // MetaData literals
+      if (r.publisher) {
+        const litPublisher = metaData + "::publisher";
+        if (!seen.has(litPublisher)) {
+          cy.add({ data:{ id: litPublisher, label: r.publisher.value, literal: true } });
+          seen.add(litPublisher);
+        }
+        cy.add({ data:{ id: metaData + "-publisher", source: metaData, target: litPublisher, label: "dcterms:publisher" } });
+      }
+
+       if (r.location) {
+        const litLocation = metaData + "::location";
+        if (!seen.has(litLocation)) {
+          cy.add({ data:{ id: litLocation, label: r.location.value, literal: true } });
+          seen.add(litLocation);
+        }
+        cy.add({ data:{ id: metaData + "-location", source: metaData, target: litLocation, label: "dcterms:Location" } });
+      }
+
+    }
+
+  }
+
+  cy.layout({ name:"cose", animate:true }).run();
+
+  // Graph → Map
+  cy.off("tap");
+  cy.on("tap", "node", async (evt) => {
+    const n = evt.target;
+    const uri = n.data("uri");
+    if (!uri) {
+      graphInfo.innerHTML = `<strong>Literal:</strong> ${n.data("label")}`;
+      return;
+    }
+    graphInfo.innerHTML = `<strong>Node:</strong> ${uri}`;
+    await focusMapOn(uri);
+  });
+}
+
+
+/* ===================== Map (MapLibre + PMTiles) ===================== */
+const map = new maplibregl.Map({
+  container: "map",
+  style: `https://api.maptiler.com/maps/streets/style.json?key=${MAPTILER_KEY}`,
+  center: [144.9631, -37.8136], // Melbourne
+  zoom: 6
+});
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+map.on("error", e => console.error("Map error:", e?.error || e));
+
+let VECTOR_LAYER_IDS = [];
+
+/* Load PMTiles and add geometry layers + selection layers + events */
+map.on("load", async () => {
+  const p = new pmtiles.PMTiles(PMTILES_HTTP);
+  const meta = await p.getMetadata().catch(() => null);
+
+  if (meta && Array.isArray(meta.vector_layers) && meta.vector_layers.length) {
+    map.addSource("tiles", { type: "vector", url: PMTILES_URL });
+    VECTOR_LAYER_IDS = meta.vector_layers.map(vl => vl.id);
+
+    meta.vector_layers.forEach((vl, i) => {
+      const LAYER = vl.id;
+      const NAME  = pickNameField(vl.fields);
+
+      /* ---- Polygons & MultiPolygons ---- */
+      /**paint:{ "fill-color":"#bdbdbd", "fill-opacity":0.05, "fill-outline-color":"#6a1b9a"  }**/
+      map.addLayer({
+        id:`poly-fill-${i}`, type:"fill", source:"tiles", "source-layer":LAYER,
+        filter:["==",["geometry-type"],"Polygon"],
+       paint:{ "fill-color":"#bdbdbd", "fill-opacity":0.00, "fill-outline-color":"#808080"  }        
+
+      });
+      map.addLayer({
+        id:`poly-outline-${i}`, type:"line", source:"tiles", "source-layer":LAYER,
+        filter:["==",["geometry-type"],"Polygon"],
+        paint:{ "line-color":"#808080", "line-width":0.2 }
+      });
+
+      /* ---- Lines & MultiLineStrings ---- */
+      map.addLayer({
+        id:`line-${i}`, type:"line", source:"tiles", "source-layer":LAYER,
+        filter:["==",["geometry-type"],"LineString"],
+        paint:{
+          "line-color":"#808080",
+          "line-width":["interpolate",["linear"],["zoom"], 5, 1, 12, 2.5, 16, 4]
+        }
+      });
+
+      /* ---- Points & MultiPoints ---- */
+      map.addLayer({
+        id:`pt-${i}`, type:"circle", source:"tiles", "source-layer":LAYER,
+        filter:["==",["geometry-type"],"Point"],
+        paint:{
+          "circle-radius":["interpolate",["linear"],["zoom"], 3,2, 8,3, 12,4, 16,5],
+          "circle-color":"#e53935",
+          "circle-stroke-color":"#ffffff",
+          "circle-stroke-width":1
+        }
+      });
+
+      /* ---- Optional labels for points ---- */
+      if (NAME) {
+        map.addLayer({
+          id:`pt-label-${i}`, type:"symbol", source:"tiles", "source-layer":LAYER,
+          filter:["==",["geometry-type"],"Point"],
+          layout:{ "text-field":["get",NAME], "text-size":12, "text-offset":[0, 1.1] },
+          paint:{ "text-halo-width":1, "text-halo-color":"#fff" }
+        });
+      }
+
+      /* ---- Selection highlight layers ---- */
+      map.addLayer({
+        id:`poly-selected-${i}`, type:"line", source:"tiles", "source-layer":LAYER,
+        filter:["all", ["==",["geometry-type"],"Polygon"], ["==",["get","id"], ""]],
+        paint:{ "line-color":"#ff1744", "line-width":2 }
+      });
+      map.addLayer({
+        id:`line-selected-${i}`, type:"line", source:"tiles", "source-layer":LAYER,
+        filter:["all", ["==",["geometry-type"],"LineString"], ["==",["get","id"], ""]],
+        paint:{ "line-color":"#ff1744", "line-width":2 }
+      });
+      map.addLayer({
+        id:`pt-selected-${i}`, type:"circle", source:"tiles", "source-layer":LAYER,
+        filter:["all", ["==",["geometry-type"],"Point"], ["==",["get","id"], ""]],
+        paint:{
+          "circle-radius":["interpolate",["linear"],["zoom"], 3,3, 8,5, 12,6, 16,7],
+          "circle-color":"#ff8a80",
+          "circle-stroke-color":"#ff1744",
+          "circle-stroke-width":2
+        }
+      });
+
+     
+
+function clearAllSelections(i) {
+  map.setFilter(`pt-selected-${i}`, ["all", ["==", ["geometry-type"], "Point"], ["==", ["get", "id"], ""]]);
+  map.setFilter(`line-selected-${i}`, ["all", ["==", ["geometry-type"], "LineString"], ["==", ["get", "id"], ""]]);
+  map.setFilter(`poly-selected-${i}`, ["all", ["==", ["geometry-type"], "Polygon"], ["==", ["get", "id"], ""]]);
+}
+
+function setSelection(geomType, id) {
+  const empty = ["==", ["get", "id"], ""];
+  clearAllSelections(i); // always reset others first
+
+  if (geomType === "Polygon") {
+    map.setFilter(`poly-selected-${i}`, id
+      ? ["all", ["==", ["geometry-type"], "Polygon"], ["==", ["get", "id"], id]]
+      : ["all", ["==", ["geometry-type"], "Polygon"], empty]
+    );
+  } else if (geomType === "LineString") {
+    map.setFilter(`line-selected-${i}`, id
+      ? ["all", ["==", ["geometry-type"], "LineString"], ["==", ["get", "id"], id]]
+      : ["all", ["==", ["geometry-type"], "LineString"], empty]
+    );
+  } else if (geomType === "Point") {
+    map.setFilter(`pt-selected-${i}`, id
+      ? ["all", ["==", ["geometry-type"], "Point"], ["==", ["get", "id"], id]]
+      : ["all", ["==", ["geometry-type"], "Point"], empty]
+    );
+  }
+}
+      /* ---- Shared click handler (per geometry type) ---- */
+      async function handleFeatureClick(e, geomType) {
+        const f = e.features?.[0]; if (!f) return;
+        const id = f.properties?.id;   // IMPORTANT: your features must carry a unique 'id' IRI property
+        setSelection(geomType, id || "");
+        const html = await queryFusekiHTML(id);
+        new maplibregl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
+        await loadGraphFor(id);
+      }
+
+      // Click events
+
+map.on("click", (e) => {
+  // First: check for points
+  const pointFeatures = map.queryRenderedFeatures(e.point, { layers: [`pt-${i}`] });
+  if (pointFeatures.length) {
+    handleFeatureClick({ features: pointFeatures, lngLat: e.lngLat }, "Point");
+    return; // stop here
+  }
+
+  // Then: check for lines
+  const lineFeatures = map.queryRenderedFeatures(e.point, { layers: [`line-${i}`] });
+  if (lineFeatures.length) {
+    handleFeatureClick({ features: lineFeatures, lngLat: e.lngLat }, "LineString");
+    return;
+  }
+
+  // Finally: polygons
+  const polyFeatures = map.queryRenderedFeatures(e.point, { layers: [`poly-fill-${i}`] });
+  if (polyFeatures.length) {
+    handleFeatureClick({ features: polyFeatures, lngLat: e.lngLat }, "Polygon");
+  }
+});
+
+      // Pointer cursor on hover
+      ["pt-"+i, "line-"+i, "poly-fill-"+i].forEach(layer => {
+        map.on("mouseenter", layer, () => map.getCanvas().style.cursor = "pointer");
+        map.on("mouseleave", layer, () => map.getCanvas().style.cursor = "");
+      });
+    });
+
+    // Fit to PMTiles bounds if available
+    if (meta?.bounds?.length === 4) {
+      const [w, s, e, n] = meta.bounds;
+      map.fitBounds([[w, s], [e, n]], { padding: 20, duration: 0 });
+    }
+  } else {
+    // Raster fallback
+    map.addSource("tiles", { type: "raster", url: PMTILES_URL, tileSize: 256 });
+    map.addLayer({ id: "raster", type: "raster", source: "tiles" });
+  }
+});
+
+/* ================ Graph → Map focus (by feature IRI) ================ */
+async function focusMapOn(uri) {
+  for (let i = 0; i < VECTOR_LAYER_IDS.length; i++) {
+    const sourceLayer = VECTOR_LAYER_IDS[i];
+    const feats = map.querySourceFeatures("tiles", {
+      sourceLayer,
+      filter: ["==", ["get", "id"], uri]
+    });
+    if (feats && feats.length) {
+      const f = feats[0];
+      const center = approximateCenter(f);
+      if (center) map.flyTo({ center, zoom: Math.max(map.getZoom(), 12) });
+
+      const gt = f.geometry?.type || "Point";
+      if (gt.includes("Polygon")) {
+        map.setFilter(`poly-selected-${i}`, ["all", ["==", ["geometry-type"], "Polygon"], ["==", ["get", "id"], uri]]);
+      } else if (gt.includes("LineString")) {
+        map.setFilter(`line-selected-${i}`, ["all", ["==", ["geometry-type"], "LineString"], ["==", ["get", "id"], uri]]);
+      } else {
+        map.setFilter(`pt-selected-${i}`, ["all", ["==", ["geometry-type"], "Point"], ["==", ["get", "id"], uri]]);
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+</script>
+</body>
+</html>
