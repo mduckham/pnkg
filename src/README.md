@@ -33,7 +33,7 @@ To add the WKT geometry, you can use `./conversion/convert_shp_WKT.py`. Instruct
 
 ## RML mapping and processing
 
-RML mapping rules are written and included in [place name mapping file](AusPlaceNameMapping20250325.ttl). 
+RML mapping rules are written and included in [place name mapping file](PlaceNameMapping.ttl). 
 The following execution command should specify the relevant paths for the mapping and output files:
  ``` 
 java -jar ./target/jarFile -m mappingFile.ttl -o output.ttl
@@ -50,5 +50,6 @@ java -jar ./lib/rmlmapper-17.0.0-r449-all.jar -m ./src/PlaceNameKGAus/RML/PlaceN
 ```
 The PNKG in ttl file format will be stored in ```./src/PlaceNameKGAus/out/pnkg_out.ttl```
 In this project, the knowledge graph was built using [RMLmapper-java](https://github.com/mduckham/semadaten/blob/main/lib/README.md). Alternatively, other RML processors, such as [PyRML and BURP](https://github.com/mduckham/semadaten/blob/main/lib/README.md), can be used to construct the PNKG. 
+
 
 
