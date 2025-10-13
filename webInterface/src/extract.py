@@ -1,7 +1,7 @@
 from rdflib import Graph, Namespace
 from rdflib.namespace import RDF
 
-goi = "/Users/ozzy/Projects/knowledge_graph_online/pnkg20250815.ttl"
+goi = "/content/drive/My Drive/GNData/placenames20250911.geojson"
 g = Graph()
 
 g.parse(goi, format="turtle") 
