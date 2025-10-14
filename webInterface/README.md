@@ -26,8 +26,7 @@ To generate mbtiles file:
    PMTiles files can be hosted directly on an AWS web server without the need for a dedicated tile server. The PMTiles file was generated from the MBTiles file.
      
 ```
-     pmtiles convert placenames.mbtiles placenames.pmtiles
-     
+     pmtiles convert placenames.mbtiles placenames.pmtiles   
 ```
 ## Web interface architecture
 A persistent triple store was created by loading the pnkg turtle file into Apache Jena TDB. The GeoSPARQL Fuseki server communicates with this store to provide a SPARQL endpoint for querying and managing the data.
