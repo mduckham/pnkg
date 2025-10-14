@@ -55,7 +55,7 @@ The following figure illustrates the workflow for generating the knowledge graph
 </div>
 
 ## Place Name Knowledge Graph (PNKG)
-This folder contains a link to download the [Australian Place Names Knowledge Graph (PNKG)](http://gkl.rmit.melbourne/kg/pnkg.20250325.ttl), which integrates gazetteer data for all Australian states and territories. The figure below presents a snapshot graph of a section of the PNKG. 
+This folder contains a link to download the [Australian Place Names Knowledge Graph (PNKG)](http://gkl.rmit.melbourne/kg/pnkg.20250911.ttl), which integrates gazetteer data for all Australian states and territories. The figure below presents a snapshot graph of a section of the PNKG. 
 
 ![Place Name Knowldge Grpah](PNKG.png)
 
