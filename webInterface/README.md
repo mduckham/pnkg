@@ -9,7 +9,6 @@ To install tippecanoe:
       
       ``` 
       brew install tippecanoe 
-      
       ```
     
 To generate mbtiles file:
