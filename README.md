@@ -69,9 +69,7 @@ A web application was developed to retrieve and display additional contextual in
 
 
 ## Further work
-The RML mapping and processing stage supports only data in CSV format. To use the same mapping rules, data in other formats must be converted to CSV. Additionally, minor modifications to the mapping rules may be required.
-
-Further work under consideration also includes development of SHACL rules and validate the RDF output for consistency and correctness.
+The RML mapping and processing stage supports only data in CSV format. To use the same mapping rules, data in other formats must be converted to CSV. Additionally, minor modifications to the mapping rules may be required. Further work under consideration also includes development of SHACL rules and validate the RDF output for consistency and correctness.
 
 ## Acknowledgments
 This development of pnkg was led by Nayomi Ranamuka and Nenad Radosevic, with contributions from all of the researchers at the [RMIT Geographic Knowledge Lab](http://gkl.rmit.melbourne/about): Alexis Horde Vo, Prawal Lohani, Amina Hossein, Mohammad Kazemi Beydokhti, Ozzy Yaguang Tao, and GKL Director [Prof Matt Duckham](https://academics.rmit.edu.au/matt-duckham). We're also grateful to the [2024 OGC Metadata Code Sprint](https://www.ogc.org/event/the-november-2024-ogc-metadata-code-sprint/), and to advice from Nicholas Car and Rob Atkinson.  
