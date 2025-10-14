@@ -65,7 +65,6 @@ A web application was developed to retrieve and display additional contextual in
 
 <div align="center">
 <img src="webInterface/webInterface.png" alt="Web Interface" style="width:95%; max-width:800px;">
-<p> <strong> Web Interface </strong></p>
 </div>
 
 
