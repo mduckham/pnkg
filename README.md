@@ -60,11 +60,11 @@ This folder contains a link to download the [Australian Place Names Knowledge Gr
 ![Place Name Knowldge Grpah](PNKG.png)
 
 
-## A Web Application for Australian Place Name Knowledge Graph
-A web application was developed to retrieve and display the additional contextual information of Australian place names stored in a Knowledge Graph. The GeoSPARQL Fuseki Server serves as the SPARQL endpoint. When the user clicks on a place on the map, the application presents the enriched contextual information in a separate knowledge graph explorer view.
+## Web Interface
+A web application was developed to retrieve and display additional contextual information about Australian place names stored in a Knowledge Graph. The GeoSPARQL Fuseki Server acts as the SPARQL endpoint. When a user clicks on a place on the map, the application displays the enriched contextual information in a separate Knowledge Graph Explorer view. More information about the technical workflow and dependencies can be found in the webInterface subfolder.
 
 <div align="center">
-<img src="webInterface/webInterface.png" alt="Web Interface" style="width:80%; max-width:800px;">
+<img src="webInterface/webInterface.png" alt="Web Interface" style="width:95%; max-width:800px;">
 <p> <strong> Web Interface </strong></p>
 </div>
 
