@@ -1,7 +1,7 @@
 # RML processors and dependencies 
 
 ###  RMLmapper-java 
-[RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the [Place Name Knowledge Graph (PNKG)](http://gkl.rmit.melbourne/kg/pnkg.20250325.ttl). 
+[RMLMapper-java](https://github.com/RMLio/rmlmapper-java) executes RML rules and generates the [Place Name Knowledge Graph (PNKG)](http://gkl.rmit.melbourne/kg/pnkg.20250911.ttl). 
 
 #### Prerequisites
 * Java 17 is the minimum required version for compiling and running the current version of the project. <br>
@@ -76,5 +76,6 @@ Example:
 java -jar burp.jar -m=mapping.ttl -o=result.nq
 ```
 Modify the execution command as needed, specifying the locations of the mapping file, and the destination for the output file.  
+
 
 
