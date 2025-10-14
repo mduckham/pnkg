@@ -7,9 +7,9 @@
 The generated GeoJSON file was then processed using [Tippecanoe](https://github.com/mapbox/tippecanoe?tab=readme-ov-file), a command-line tool for creating vector tilesets from GeoJSON data. The following command was used:
 To install tippecanoe:
       
-      ``` 
+``` 
       brew install tippecanoe 
-      ```
+```
     
 To generate mbtiles file:
     
@@ -25,9 +25,10 @@ To generate mbtiles file:
 ### 3. Convert MBTiles to PMTiles
    PMTiles files can be hosted directly on an AWS web server without the need for a dedicated tile server. The PMTiles file was generated from the MBTiles file.
      
-     ```
+```
      pmtiles convert placenames.mbtiles placenames.pmtiles
-     ```
+     
+```
 ## Web interface architecture
 A persistent triple store was created by loading the pnkg turtle file into Apache Jena TDB. The GeoSPARQL Fuseki server communicates with this store to provide a SPARQL endpoint for querying and managing the data.
 The web server hosts both the [.pmtiles file](resources/placenames20250911.pmtiles) (used for serving vector tiles) and the [indexPNKGweb.html](src/indexPNKGweb.html) file. The HTML file serves as the interface to the web application, initializing the client-side interface and rendering the map by accessing the .pmtiles file.
