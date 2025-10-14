@@ -22,6 +22,7 @@ The generated GeoJSON file was then processed using [Tippecanoe](https://github.
       ```
 ### 3. Convert MBTiles to PMTiles
    PMTiles files can be hosted directly on an AWS web server without the need for a dedicated tile server. The PMTiles file was generated from the MBTiles file.
+     
      ```
      pmtiles convert placenames.mbtiles placenames.pmtiles
      ```
