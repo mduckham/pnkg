@@ -34,6 +34,6 @@ A persistent triple store was created by loading the pnkg turtle file into Apach
 The web server hosts both the [.pmtiles file](resources/placenames20250911.pmtiles) (used for serving vector tiles) and the [indexPNKGweb.html](src/indexPNKGweb.html) file. The HTML file serves as the interface to the web application, initializing the client-side interface and rendering the map by accessing the .pmtiles file.
 Based on user interactions—such as selecting a specific geometry on the map—the application retrieves the geometry ID and sends it to the GeoSPARQL Fuseki server via SPARQL queries to obtain additional contextual information enriched in the knowldge graph. These semantic data are then displayed within the web application interface. The following image illustrates the architectural design of the web interface deployed in the AWS cloud environment.
 <div align="center">
-<img src="systemArchitecture.png" alt="Web Application Architecture" style="width:70%; max-width:800px;">
+<img src="systemArchitecture.png" alt="Web Application Architecture" style="width:95%; max-width:800px;">
 <p> <strong> Web Application Architecture Diagram </strong></p>
 </div>
