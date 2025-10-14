@@ -59,6 +59,16 @@ This folder contains a link to download the [Australian Place Names Knowledge Gr
 
 ![Place Name Knowldge Grpah](PNKG.png)
 
+
+## A Web Application for Australian Place Name Knowledge Graph
+A web application was developed to retrieve and display the additional contextual information of Australian place names stored in a Knowledge Graph. The GeoSPARQL Fuseki Server serves as the SPARQL endpoint. When the user clicks on a place on the map, the application presents the enriched contextual information in a separate knowledge graph explorer view.
+
+<div align="center">
+<img src="webInterface/webInterface.png" alt="Web Interface" style="width:80%; max-width:800px;">
+<p> <strong> Web Interface </strong></p>
+</div>
+
+
 ## Further work
 The RML mapping and processing stage supports only data in CSV format. To use the same mapping rules, data in other formats must be converted to CSV. Additionally, minor modifications to the mapping rules may be required.
 
