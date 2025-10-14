@@ -36,5 +36,4 @@ A persistent triple store was created by loading the pnkg turtle file into Apach
 
 <div align="center">
 <img src="systemArchitecture.png" alt="Web Application Architecture" style="width:95%; max-width:800px;">
-<p> <strong> Web Application Architecture Diagram </strong></p>
 </div>
