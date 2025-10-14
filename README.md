@@ -51,7 +51,7 @@ The knowledge construction workflow includes the following stages:
   
 The following figure illustrates the workflow for generating the knowledge graph.
 <div align="center">
-  <img src="doc/PlaceName_sde_process.png" alt="Alt text" style="width:80%;">
+  <img src="doc/PlaceName_sde_process.png" alt="Alt text" style="width:95%;">
 </div>
 
 ## Place Name Knowledge Graph (PNKG)
