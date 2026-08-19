@@ -140,9 +140,16 @@ export function getCytoscapeStyles(): any[] {
     "font-style": "normal",
     "text-rotation": "autorotate",
     "text-border-opacity": 0,
-    // Small perpendicular lift so the label floats above the edge stroke, not on top of it.
+    // Small perpendicular lift so the label floats above the edge stroke, not on top of it —
+    // but text-margin only reliably clears the line for near-horizontal edges; on a radial
+    // layout edges point every which way, so a background is the only angle-proof fix for the
+    // line visibly cutting through the label text on steep/vertical edges.
     "text-margin-y": -10,
     color: "#333333",
+    "text-background-opacity": 1,
+    "text-background-color": "#f9fafb",
+    "text-background-padding": "2px",
+    "text-background-shape": "roundrectangle",
     // Above every node (default z-index 0) so a node's fill never paints over a nearby label.
     "z-index": 10,
   };
