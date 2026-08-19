@@ -61,6 +61,18 @@ placenamesv2/
 └── vercel.json            ← production build/proxy config
 ```
 
+## The PMTiles map-tile file
+
+`public/placenames-recommendedzoom.pmtiles` follows the same pipeline as
+[pnkg's own webInterface build](https://github.com/mduckham/pnkg/blob/main/webInterface/README.md#techical-workflow-and-dependencies)
+— Turtle → GeoJSON → MBTiles (tippecanoe) → PMTiles — with one addition:
+every Point feature also carries a `recommendedZoom` number, computed from
+the density of nearby points (denser areas get a closer recommended zoom,
+sparser areas a further one). The app reads it in
+`src/services/recommendedZoomService.ts` to pick a place's initial zoom
+without a live query. The tile layer's only properties are `id` and
+`recommendedZoom` — no `wkt`, since MVT tiles carry point geometry natively.
+
 ## Configuration — no code changes needed for a different dataset
 
 Per `src/config/appConfig.ts`'s own header comment, this app is meant to be
