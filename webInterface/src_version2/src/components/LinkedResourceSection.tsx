@@ -16,14 +16,14 @@ function dotColorFor(nodeType: string): string {
   return entry?.color ?? appConfig.nodeTypes.literal.color;
 }
 
-// Publisher/Location's summary text IS their one literal child's value (foaf:name/skos:prefLabel) — hovering it should highlight that literal, not the Publisher/Location node; matches graphBuilder.ts's literal:pub:/literal:loc: id format.
+// Publisher/Location's summary text IS their one literal child's value (foaf:name/skos:prefLabel) — hovering it should highlight that literal, not the Publisher/Location node; id keyed by the resource's own uri (not the text value) matching graphBuilder.ts's per-owner literal:pub:/literal:loc: id format.
 const DCTERMS_PUBLISHER_PREDICATE = 'http://purl.org/dc/terms/publisher';
 const DCTERMS_SPATIAL_PREDICATE = 'http://purl.org/dc/terms/spatial';
 
-function summaryLiteralId(predicate: string | undefined, summary: string | undefined): string | null {
-  if (!summary) return null;
-  if (predicate === DCTERMS_PUBLISHER_PREDICATE) return `literal:pub:${summary}`;
-  if (predicate === DCTERMS_SPATIAL_PREDICATE) return `literal:loc:${summary}`;
+function summaryLiteralId(predicate: string | undefined, uri: string | undefined, summary: string | undefined): string | null {
+  if (!summary || !uri) return null;
+  if (predicate === DCTERMS_PUBLISHER_PREDICATE) return `literal:pub:${uri}`;
+  if (predicate === DCTERMS_SPATIAL_PREDICATE) return `literal:loc:${uri}`;
   return null;
 }
 
@@ -164,7 +164,7 @@ function ExpandableLinkedResource({
   // Prefer the freshly-fetched type; fall back to the parent's eager peek for the first render.
   const nodeType = inferNodeType(uri, rdfTypes[0] ?? resolvedType);
   const { flat, children } = useLinkedChildren(uri, properties, rdfTypes.length, graphState);
-  const summaryLiteral = summaryLiteralId(predicate, summary);
+  const summaryLiteral = summaryLiteralId(predicate, uri, summary);
 
   return (
     <AccordionSection
@@ -223,7 +223,7 @@ function PlainResourceLink({ uri, title, summary, predicate, cycle, onHighlightN
 }) {
   // Publisher/Location's displayed value IS their own literal node's text one hop further
   // out — hovering it should target that literal, not the Publisher/Location node itself.
-  const literalId = summaryLiteralId(predicate, summary);
+  const literalId = summaryLiteralId(predicate, uri, summary);
   return (
     <p
       className={`text-xs leading-relaxed py-1 ${isSelected ? 'ring-2 ring-inset ring-amber-400 bg-amber-50/60 rounded -mx-1 px-1' : ''}`}

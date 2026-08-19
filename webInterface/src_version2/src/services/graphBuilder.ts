@@ -28,12 +28,19 @@ export function buildGraphFromMultiValuedData(data: GeometryQueryResult): GraphD
     nodes.push({ id, label, fullLabel, type: type as GraphNode["type"], uri, x: 0, y: 0, radius: 30 });
   }
 
-  // Helper: add edge with dedup
+  // Helper: add edge with dedup. Tags a target's SECOND (or later) incoming edge as
+  // sharedTarget — e.g. two PlaceNames of the same place sharing one MetaData node — so
+  // graphNodeStyles.ts can bow it outward instead of cutting through whatever sits between
+  // the two, since the target's position was only ever chosen relative to whichever edge
+  // reached it first.
+  const targetsWithIncoming = new Set<string>();
   function addEdge(source: string, target: string, label: string) {
     const edgeId = `${source}->${target}:${label}`;
     if (seen.has(edgeId)) return;
     seen.add(edgeId);
-    edges.push({ source, target, label });
+    const sharedTarget = targetsWithIncoming.has(target);
+    targetsWithIncoming.add(target);
+    edges.push({ source, target, label, sharedTarget });
   }
 
   // The shared geometry URI that was searched — key link between places at the same location.
@@ -91,21 +98,31 @@ export function buildGraphFromMultiValuedData(data: GeometryQueryResult): GraphD
       addNode(nameId, name.name, "literal");
       addEdge(name.uri, nameId, "pn:name");
 
-      // Status literal is shared — same value = same node.
+      // Per Nayomi/Prof's request: grey attribute/value nodes are duplicated per owning
+      // resource (v1-style), not shared by value — only class/resource nodes (Place,
+      // PlaceName, MetaData, Geometry, Publisher, Location) stay deduplicated. Old
+      // shared-by-value version, kept in case that's preferred again later:
+      // const statusId = `literal:status:${name.status}`;
       if (name.status) {
-        const statusId = `literal:status:${name.status}`;
+        const statusId = `literal:status:${name.uri}`;
         addNode(statusId, name.status, "literal");
         addEdge(name.uri, statusId, "pn:status");
       }
 
       // pn:dateGazetted intentionally not rendered as a node — shown only in the panel.
 
-      // Real URI as the node id (not synthetic) so a later double-click's dedup
-      // check recognises this node and doesn't add a duplicate.
+      // Per Nayomi/Prof's request: the naming Authority reads visually as a grey attribute
+      // (styled the same as literal nodes), so — like status/publisher-name/location-name —
+      // it's duplicated per owning PlaceName, not shared by URI like a real resource. `uri`
+      // (5th addNode arg) still carries the real Authority URI, so click-through/expansion
+      // still works normally. Old shared-by-URI version, kept in case that's preferred later:
+      // addNode(name.wasNamedBy, authorityLabel, "resource", name.wasNamedBy, authorityLabel);
+      // addEdge(name.uri, name.wasNamedBy, "pn:wasNamedBy");
       if (name.wasNamedBy) {
         const authorityLabel = decodeURIComponent(name.wasNamedBy.split('/').pop() || 'Authority');
-        addNode(name.wasNamedBy, authorityLabel, "resource", name.wasNamedBy, authorityLabel);
-        addEdge(name.uri, name.wasNamedBy, "pn:wasNamedBy");
+        const authorityId = `${name.uri}::wasNamedBy`;
+        addNode(authorityId, authorityLabel, "resource", name.wasNamedBy, authorityLabel);
+        addEdge(name.uri, authorityId, "pn:wasNamedBy");
       }
 
       // One shared metadata node if publisher+location match. Node ids/labels match
@@ -120,7 +137,9 @@ export function buildGraphFromMultiValuedData(data: GeometryQueryResult): GraphD
           addNode(name.publisherUri, "Publisher", "metaData", name.publisherUri);
           addEdge(metaKey, name.publisherUri, "dcterms:publisher");
           if (name.publisher) {
-            const pubLiteralId = `literal:pub:${name.publisher}`;
+            // Old shared-by-value version, kept in case that's preferred again later:
+            // const pubLiteralId = `literal:pub:${name.publisher}`;
+            const pubLiteralId = `literal:pub:${name.publisherUri}`;
             addNode(pubLiteralId, name.publisher, "literal");
             addEdge(name.publisherUri, pubLiteralId, "foaf:name");
           }
@@ -130,7 +149,9 @@ export function buildGraphFromMultiValuedData(data: GeometryQueryResult): GraphD
           addNode(name.locationUri, "Location", "metaData", name.locationUri);
           addEdge(metaKey, name.locationUri, "dcterms:spatial");
           if (name.location) {
-            const locLiteralId = `literal:loc:${name.location}`;
+            // Old shared-by-value version, kept in case that's preferred again later:
+            // const locLiteralId = `literal:loc:${name.location}`;
+            const locLiteralId = `literal:loc:${name.locationUri}`;
             addNode(locLiteralId, name.location, "literal");
             addEdge(name.locationUri, locLiteralId, "skos:prefLabel");
           }
@@ -164,11 +185,14 @@ export function buildGraphFromPlace(place: PlaceDetail): GraphData {
     nodes.push({ id, label, fullLabel, type: type as GraphNode["type"], uri, x: 0, y: 0, radius: 30 });
   }
 
+  const targetsWithIncoming = new Set<string>();
   function addEdge(source: string, target: string, label: string) {
     const edgeId = `${source}->${target}:${label}`;
     if (seen.has(edgeId)) return;
     seen.add(edgeId);
-    edges.push({ source, target, label });
+    const sharedTarget = targetsWithIncoming.has(target);
+    targetsWithIncoming.add(target);
+    edges.push({ source, target, label, sharedTarget });
   }
 
   const placeId = place.placeUri || "place";
@@ -186,7 +210,9 @@ export function buildGraphFromPlace(place: PlaceDetail): GraphData {
     }
 
     if (place.status) {
-      const statusId = `literal:status:${place.status}`;
+      // Old shared-by-value version, kept in case that's preferred again later:
+      // const statusId = `literal:status:${place.status}`;
+      const statusId = `literal:status:${place.placeNameUri}`;
       addNode(statusId, place.status, "literal");
       addEdge(place.placeNameUri, statusId, "pn:status");
     }

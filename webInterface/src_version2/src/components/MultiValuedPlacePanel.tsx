@@ -202,12 +202,26 @@ function PlaceView({ place, onHighlightNodes, onNavigateToPlace, onGeometrySwitc
   const activeName = clickedName ?? overrideActiveName ?? defaultName;
   const otherNames = place.names.filter((n) => n.uri !== activeName?.uri);
 
+  // These select two DIFFERENT rows, not the block as a whole — clicking the Classification
+  // node (often no real RDF URI of its own, only the synthetic canvas id graphBuilder.ts gives
+  // it, hence matching on id) rings just the classification line; clicking the Place node rings
+  // just its Identifier row (below), matching the row-level highlightPredicate convention used
+  // elsewhere in this panel rather than ringing the whole block for either.
+  const isClassificationSelected =
+    !!selectedGraphNode && selectedGraphNode.id === `class:${place.classification}`;
+  const isPlaceItselfSelected =
+    !!selectedGraphNode && selectedGraphNode.uri === place.placeUri;
+  const ringClass = 'ring-2 ring-inset ring-amber-400 bg-amber-50/60';
+
   return (
     <section className="space-y-3">
       <div className="space-y-3">
-        <div className="space-y-1.5">
+        <div
+          className="space-y-1.5 -mx-1.5 px-1.5 py-1 rounded"
+          ref={registerRef ? (el) => registerRef(place.placeUri, el) : undefined}
+        >
           <p
-            className="flex items-center gap-2 text-xs leading-relaxed -mx-1.5 px-1.5 py-0.5 rounded cursor-pointer hover:bg-gray-50"
+            className={`flex items-center gap-2 text-xs leading-relaxed -mx-1.5 px-1.5 py-0.5 rounded cursor-pointer hover:bg-gray-50 ${isClassificationSelected ? ringClass : ''}`}
             onMouseEnter={() => onHighlightNodes?.([`class:${place.classification}`])}
             onMouseLeave={() => onHighlightNodes?.([])}
           >
@@ -226,7 +240,9 @@ function PlaceView({ place, onHighlightNodes, onNavigateToPlace, onGeometrySwitc
               {placeFlatProperties.map((prop) => (
                 <p
                   key={prop.predicate}
-                  className="text-xs leading-relaxed -mx-1 px-1 rounded cursor-pointer hover:bg-gray-50"
+                  className={`text-xs leading-relaxed -mx-1 px-1 rounded cursor-pointer hover:bg-gray-50 ${
+                    isPlaceItselfSelected && prop.predicate === DCTERMS_IDENTIFIER_PREDICATE ? ringClass : ''
+                  }`}
                   onMouseEnter={() => onHighlightNodes?.([place.placeUri])}
                   onMouseLeave={() => onHighlightNodes?.([])}
                 >
@@ -658,12 +674,16 @@ function NameOwnDetail({ name, selectedGraphNode, onHighlightNodes, graphState, 
         resetKey={name.uri}
         humanizeLabels
         dotColor={appConfig.nodeTypes.placeName.color}
-        highlightPredicate={name.uri === selectedGraphNode?.uri ? highlightPredicate : undefined}
+        // A literal click resolving here (e.g. the status circle) names its own predicate via
+        // highlightPredicate; a direct click on the PlaceName node itself carries no predicate,
+        // so it defaults to ringing Identifier — same convention as the Place block's own click.
+        highlightPredicate={name.uri === selectedGraphNode?.uri ? (highlightPredicate ?? DCTERMS_IDENTIFIER_PREDICATE) : undefined}
         onHighlightNodes={onHighlightNodes}
-        // Status's canvas literal id uses the extracted label (extractLocalName), not the raw URI.
+        // Status's canvas literal id is keyed by the owning PlaceName's own uri (per-owner, not
+        // shared by value — see graphBuilder.ts/useGraphExpansion.ts's literal:status: scheme).
         // Identifier hovers straight to the PlaceName node — its label already shows the identifier.
         hoverTarget={(prop) => {
-          if (prop.predicate === PN_STATUS_PREDICATE) return `literal:status:${extractLocalName(prop.value)}`;
+          if (prop.predicate === PN_STATUS_PREDICATE) return `literal:status:${name.uri}`;
           if (prop.predicate === DCTERMS_IDENTIFIER_PREDICATE) return name.uri;
           return null;
         }}
@@ -680,7 +700,7 @@ function NameOwnDetail({ name, selectedGraphNode, onHighlightNodes, graphState, 
                   hop further out (dcterms:spatial then skos:prefLabel) — each needs its own target. */}
               <span className="text-gray-500" onMouseEnter={() => name.locationUri && onHighlightNodes?.([name.locationUri])}>Location:</span>{' '}
               {name.locationUri ? (
-                <a href={name.locationUri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onMouseEnter={() => onHighlightNodes?.([`literal:loc:${name.location}`])}>{name.location}</a>
+                <a href={name.locationUri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onMouseEnter={() => onHighlightNodes?.([`literal:loc:${name.locationUri}`])}>{name.location}</a>
               ) : (
                 <span className="text-gray-700">{name.location}</span>
               )}
@@ -693,7 +713,7 @@ function NameOwnDetail({ name, selectedGraphNode, onHighlightNodes, graphState, 
                   literal node (dcterms:publisher then foaf:name). */}
               <span className="text-gray-500" onMouseEnter={() => name.publisherUri && onHighlightNodes?.([name.publisherUri])}>Publisher:</span>{' '}
               {name.publisherUri ? (
-                <a href={name.publisherUri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onMouseEnter={() => onHighlightNodes?.([`literal:pub:${name.publisher}`])}>{name.publisher}</a>
+                <a href={name.publisherUri} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline" onMouseEnter={() => onHighlightNodes?.([`literal:pub:${name.publisherUri}`])}>{name.publisher}</a>
               ) : (
                 <span className="text-gray-700">{name.publisher}</span>
               )}
@@ -757,6 +777,19 @@ function CrossBorderSection({
   const [expandedUris, setExpandedUris] = useState<Set<string>>(new Set());
   const [detailByUri, setDetailByUri] = useState<Map<string, MultiValuedPlace | 'loading' | 'error'>>(new Map());
 
+  // Shared by a manual click and the KG-click auto-expand effect below — fetches once, marks loading/error.
+  const ensureFetched = (placeUri: string) => {
+    onExpandCrossBorderNode?.(placeUri);
+    setDetailByUri((prevMap) => {
+      if (prevMap.has(placeUri)) return prevMap;
+      const next = new Map(prevMap).set(placeUri, 'loading' as const);
+      fetchMultiValuedPlaceByPlaceUri(placeUri)
+        .then((place) => setDetailByUri((m) => new Map(m).set(placeUri, place ?? 'error')))
+        .catch(() => setDetailByUri((m) => new Map(m).set(placeUri, 'error')));
+      return next;
+    });
+  };
+
   const toggleExpanded = (placeUri: string, isCycle: boolean) => {
     setExpandedUris((prev) => {
       const next = new Set(prev);
@@ -766,17 +799,24 @@ function CrossBorderSection({
       }
       next.add(placeUri);
       // Cycle entries only show the "already shown above" note — no fetch, no re-expansion.
-      if (isCycle) return next;
-      onExpandCrossBorderNode?.(placeUri);
-      if (!detailByUri.has(placeUri)) {
-        setDetailByUri((prevMap) => new Map(prevMap).set(placeUri, 'loading'));
-        fetchMultiValuedPlaceByPlaceUri(placeUri)
-          .then((place) => setDetailByUri((prevMap) => new Map(prevMap).set(placeUri, place ?? 'error')))
-          .catch(() => setDetailByUri((prevMap) => new Map(prevMap).set(placeUri, 'error')));
-      }
+      if (!isCycle) ensureFetched(placeUri);
       return next;
     });
   };
+
+  // A KG click resolving into a cross-border entry's own subtree (findResourcePathFromRoots
+  // now searches cross-border places too — see DataPanel.tsx) needs this entry expanded exactly
+  // like a manual click would, since expandedUris is otherwise only ever touched by toggleExpanded.
+  useEffect(() => {
+    for (const cb of crossBorderPlaces) {
+      if (visitedPlaceUris?.has(cb.placeUri)) continue; // cycle — never auto-fetch
+      if (isAutoOpenFn(cb.placeUri) && !expandedUris.has(cb.placeUri)) {
+        setExpandedUris((prev) => new Set(prev).add(cb.placeUri));
+        ensureFetched(cb.placeUri);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [crossBorderPlaces, isAutoOpenFn, expandedUris]);
 
   return (
     <AccordionSection

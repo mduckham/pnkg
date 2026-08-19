@@ -446,10 +446,12 @@ SELECT ?wkt WHERE { <${geo}> geo:asWKT ?wkt } LIMIT 1`
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-gray-900">
       {/* Header */}
       <header className="bg-[#1a2332] text-white px-4 py-2 flex items-center shadow-md z-20 relative">
-        <a href={appConfig.logoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mr-4 hover:opacity-80 transition-opacity">
-          <div className="w-7 h-7 bg-linear-to-br from-blue-400 to-blue-600 rounded-md flex items-center justify-center text-[10px] font-bold">GKL</div>
+        <div className="flex items-center gap-2 mr-4">
+          <a href={appConfig.logoUrl} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+            <img src="/gkl-trans.png" alt="GKL" className="w-7 h-7 object-contain" />
+          </a>
           <span className="text-xs font-medium text-gray-400">@RMIT</span>
-        </a>
+        </div>
         <h1 className="flex-1 text-center text-sm font-semibold tracking-wide">{appConfig.title}</h1>
         <a href={appConfig.aboutUrl} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 transition-colors">About</a>
       </header>

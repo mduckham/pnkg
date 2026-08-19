@@ -3,13 +3,13 @@
 import { useRef, useEffect, useCallback, useState, useMemo, forwardRef, useImperativeHandle } from "react";
 import cytoscape from "cytoscape";
 import type { Core, EventObject } from "cytoscape";
-import type { GraphData, GraphNode } from "../types/graph";
+import type { GraphData, GraphNode, GraphEdge } from "../types/graph";
 import { createDefaultRegistry } from "../services/expansionHandlers";
 import { countExpandableRelationships } from "../services/genericExpansion";
 import { clearCache } from "../services/sparqlCache";
 import { useGraphState } from "../hooks/useGraphState";
 import type { NodeExpansionState } from "../hooks/useGraphState";
-import { useGraphExpansion } from "../hooks/useGraphExpansion";
+import { useGraphExpansion, authoritativePosition, hasPendingRepositions } from "../hooks/useGraphExpansion";
 import type { ExpandOutcome } from "../hooks/useGraphExpansion";
 import { checkExpandability } from "../services/expandabilityChecker";
 import { computeRadialLayout, type LayoutPosition, estimateLabelWidth } from "../services/graphLayout";
@@ -87,28 +87,34 @@ function labelObstacleRadius(label: string | undefined): number {
 }
 
 /** After an expansion, pushes each new node outward from its own local anchor (not the graph origin) just far enough to clear existing nodes and edge labels, without moving anything pre-existing. */
-function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
+function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>, hasInFlightExpansions: () => boolean) {
   const newIds = cy.nodes().filter((n) => !preExistingIds.has(n.id())).map((n) => n.id());
   if (newIds.length === 0) return;
   const newIdSet = new Set(newIds);
 
   // Obstacles: existing nodes + existing edges' labels; grows as each new node resolves.
+  // authoritativePosition, not n.position() directly — an existing node can still be mid-flight
+  // in a repositionSharedNode compromise-move animation right now (this walk may have just
+  // discovered a second parent for an already-existing MetaData/Publisher/Location); reading its
+  // transient in-between frame here "safely" places a new node against where it USED to be, and
+  // the obstacle then animates into the new node once its own move finishes settling.
   const obstacles: Array<{ x: number; y: number; r: number }> = [];
   cy.nodes().forEach((n) => {
     if (!newIdSet.has(n.id())) {
-      obstacles.push({ x: n.position('x'), y: n.position('y'), r: nodeBaseSize(n.data('type')) / 2 });
+      const p = authoritativePosition(cy, n.id());
+      obstacles.push({ x: p.x, y: p.y, r: nodeBaseSize(n.data('type')) / 2 });
     }
   });
   cy.edges().forEach((e) => {
     if (preExistingIds.has(e.source().id()) && preExistingIds.has(e.target().id())) {
-      const sx = e.source().position('x'), sy = e.source().position('y');
-      const tx = e.target().position('x'), ty = e.target().position('y');
-      obstacles.push({ x: (sx + tx) / 2, y: (sy + ty) / 2, r: labelObstacleRadius(e.data('label')) });
+      const sp = authoritativePosition(cy, e.source().id());
+      const tp = authoritativePosition(cy, e.target().id());
+      obstacles.push({ x: (sp.x + tp.x) / 2, y: (sp.y + tp.y) / 2, r: labelObstacleRadius(e.data('label')) });
     }
   });
 
   // Gap kept generous so a new node reads as clearly separate, not just non-overlapping.
-  const GAP = 40;
+  const GAP = 55;
 
   // Closest-to-centre nodes resolve first — pushing one further out can
   // only ever help a node already further out clear it, never the reverse.
@@ -119,6 +125,13 @@ function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
 
   // Nodes with a settled final position — used to find each new node's local anchor.
   const fixedIds = new Set(preExistingIds);
+  // This loop's own resolved (x,y) per id — its own node.animate() calls below are just as
+  // susceptible to the transient-position-read race as repositionSharedNode's (see
+  // authoritativePosition's doc comment); preferred over cy's live position() for any id this
+  // loop has already placed, falling back to authoritativePosition (pre-existing nodes possibly
+  // still animating from an earlier repositionSharedNode move) for everything else.
+  const resolvedPos = new Map<string, { x: number; y: number }>();
+  const anchorPos = (id: string) => resolvedPos.get(id) ?? authoritativePosition(cy, id);
 
   for (const id of ordered) {
     const node = cy.getElementById(id);
@@ -130,7 +143,7 @@ function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
       const other = e.source().id() === id ? e.target() : e.source();
       if (other.id() !== id && fixedIds.has(other.id())) {
         if (anchorSlot.id === null || other.id() < anchorSlot.id) {
-          anchorSlot.value = { x: other.position('x'), y: other.position('y') };
+          anchorSlot.value = anchorPos(other.id());
           anchorSlot.id = other.id();
         }
       }
@@ -146,7 +159,14 @@ function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
     let y = node.position('y');
     let pushed = true;
     let iterations = 0;
-    while (pushed && iterations < 30) {
+    // Capped low deliberately: this pushes along ONE fixed angle (from the node's own anchor),
+    // extending further every time it still collides — a dense graph with obstacles strung out
+    // along that ray can make it keep going for a very long way (450+ units seen in practice,
+    // nearly double a normal hop, stranding a node far from the parent it's actually attached
+    // to). resolveResidualOverlaps' later pass — proportional, bounded nudges rather than a
+    // runaway extension along a single direction — mops up whatever's still left after a few
+    // tries here, instead of this loop chasing a fully-clear spot no matter how far that is.
+    while (pushed && iterations < 3) {
       pushed = false;
       iterations++;
       for (const obs of obstacles) {
@@ -162,16 +182,18 @@ function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
       }
     }
     if (x !== node.position('x') || y !== node.position('y')) {
-      node.animate({ position: { x, y } } as any, { duration: 400 });
+      node.animate({ position: { x, y } } as any, { duration: 180 });
     }
     obstacles.push({ x, y, r });
+    resolvedPos.set(id, { x, y });
     fixedIds.add(id);
 
     // Edges to already-fixed neighbours now have a settled label position — add as an obstacle.
     connected.forEach((e) => {
       const other = e.source().id() === id ? e.target() : e.source();
       if (other.id() !== id && fixedIds.has(other.id())) {
-        obstacles.push({ x: (x + other.position('x')) / 2, y: (y + other.position('y')) / 2, r: labelObstacleRadius(e.data('label')) });
+        const op = anchorPos(other.id());
+        obstacles.push({ x: (x + op.x) / 2, y: (y + op.y) / 2, r: labelObstacleRadius(e.data('label')) });
       }
     });
   }
@@ -179,7 +201,95 @@ function resolveNewSubtreeOverlaps(cy: Core, preExistingIds: Set<string>) {
   setTimeout(() => {
     checkNodeOverlap(cy);
     fitToPanel(cy);
-  }, 450);
+  }, 220);
+  // A second, later pass, fixing (not just warning about) any residual overlap — see
+  // scheduleResidualOverlapCheck's own doc comment for why this is a shared debounce rather than
+  // each walk independently guessing a delay.
+  scheduleResidualOverlapCheck(cy, hasInFlightExpansions);
+}
+
+/** Shared across every concurrent walk (module-level, not per-call) — several cross-border
+ *  places double-tapped in quick succession each run their own independent recursive walk,
+ *  interleaved, and each one's own resolveNewSubtreeOverlaps finishing calls this. A per-walk
+ *  poll/timer here would race: walk A's own "is everything settled" check has no way to know
+ *  walk B is still mid-flight and about to trigger a reposition of its own. Debouncing instead —
+ *  every call restarts the same shared timer — means the actual check only ever runs once the
+ *  WHOLE burst of concurrent activity has gone quiet, regardless of how many walks were
+ *  involved or how staggered they finish, which a fixed guessed delay (the original 950ms this
+ *  replaced, made this whole flow feel like it was "still animating" 4-5 seconds after the data
+ *  had already loaded) or a fragile per-walk poll (tried and confirmed still racy) can't guarantee. */
+let residualOverlapTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Debounce delay: resolveNewSubtreeOverlaps' own local push-loop animates for 180ms and isn't
+ *  tracked by pendingNodeTargets (that map is specific to repositionSharedNode) — restarting the
+ *  timer here on every call already handles concurrent walks (see above), but a lone walk with
+ *  no repositioning at all still needs this floor so its own push animation has time to finish
+ *  before the snapshot below reads a still-moving position. */
+const RESIDUAL_OVERLAP_DEBOUNCE_MS = 220;
+
+function scheduleResidualOverlapCheck(cy: Core, hasInFlightExpansions: () => boolean, retriesLeft = 12) {
+  if (residualOverlapTimer !== null) clearTimeout(residualOverlapTimer);
+  residualOverlapTimer = setTimeout(() => {
+    // Still something else in flight (another concurrent walk) — keep pushing the check out
+    // rather than snapshotting a graph that's about to change again. Capped (~2.8s total) so a
+    // genuinely stuck request can't wedge this forever.
+    if ((hasPendingRepositions() || hasInFlightExpansions()) && retriesLeft > 0) {
+      scheduleResidualOverlapCheck(cy, hasInFlightExpansions, retriesLeft - 1);
+      return;
+    }
+    residualOverlapTimer = null;
+    if (resolveResidualOverlaps(cy)) {
+      checkNodeOverlap(cy);
+      fitToPanel(cy);
+    }
+  }, RESIDUAL_OVERLAP_DEBOUNCE_MS);
+}
+
+/** Final safety net, independent of what caused it: finds any node pairs still overlapping
+ *  after everything from one expansion gesture has settled, and nudges each pair directly apart
+ *  along their connecting line. Symmetric (both members of a pair move a little) rather than
+ *  favouring one side, since — unlike resolveNewSubtreeOverlaps' "new vs already-fixed" ordering
+ *  — there's no reliable way to tell which of two independently-moved nodes is the "more settled"
+ *  one here. Computed entirely against a plain snapshot (never cy's own position() mid-pass) so
+ *  resolving one pair can't read a stale value while un-applied moves from an earlier pass are
+ *  still pending — the exact class of bug this whole file's authoritativePosition guards against
+ *  elsewhere. Returns whether anything moved. */
+function resolveResidualOverlaps(cy: Core): boolean {
+  const GAP = 55;
+  const ids = cy.nodes().map((n) => n.id());
+  const radiusById = new Map(cy.nodes().map((n) => [n.id(), nodeBaseSize(n.data('type')) / 2]));
+  const pos = new Map(cy.nodes().map((n) => [n.id(), { x: n.position('x'), y: n.position('y') }]));
+
+  let anyMoved = false;
+  for (let pass = 0; pass < 6; pass++) {
+    let movedThisPass = false;
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        const idA = ids[i], idB = ids[j];
+        const a = pos.get(idA)!, b = pos.get(idB)!;
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        const needed = (radiusById.get(idA) ?? 0) + (radiusById.get(idB) ?? 0) + GAP;
+        if (dist < needed) {
+          movedThisPass = true;
+          anyMoved = true;
+          const angle = dist > 0.01 ? Math.atan2(a.y - b.y, a.x - b.x) : Math.random() * Math.PI * 2;
+          const extra = (needed - dist) / 2 + 3;
+          pos.set(idA, { x: a.x + extra * Math.cos(angle), y: a.y + extra * Math.sin(angle) });
+          pos.set(idB, { x: b.x - extra * Math.cos(angle), y: b.y - extra * Math.sin(angle) });
+        }
+      }
+    }
+    if (!movedThisPass) break;
+  }
+
+  if (!anyMoved) return false;
+  cy.nodes().forEach((n) => {
+    const p = pos.get(n.id());
+    if (p && (p.x !== n.position('x') || p.y !== n.position('y'))) {
+      n.animate({ position: p } as any, { duration: 180 });
+    }
+  });
+  return true;
 }
 
 export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function GraphPanel({
@@ -210,7 +320,17 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
       const tryExpand = (attemptsLeft: number) => {
         const node = cy.nodes().filter((n) => n.data("uri") === uri);
         if (node.length > 0) {
-          node.emit("dbltap");
+          // Skip if this node was already expanded via some other path by the time this retry
+          // finally runs (e.g. discovered as a shared/cross-linked node through a completely
+          // different click elsewhere) — the dbltap handler always re-selects its target too, so
+          // firing it here wouldn't just be a redundant expand, it would silently hijack whatever
+          // the user has since clicked, however long ago THIS call was originally triggered (up
+          // to the full ~3.2s retry window) — confirmed live: a cross-border panel entry's
+          // auto-expand call landing late enough overrode an unrelated node the user had just
+          // selected on the canvas.
+          if (node.outgoers('edge').length === 0) {
+            node.emit("dbltap");
+          }
           return;
         }
         if (attemptsLeft > 0) setTimeout(() => tryExpand(attemptsLeft - 1), 400);
@@ -251,7 +371,7 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
   }), [placeUri, geometryUri, placeNameUri]);
 
   // Graph expansion hook — orchestrates expand/collapse workflows
-  const { expand, collapse, lastError, lastNotice, clearNotice } = useGraphExpansion({
+  const { expand, collapse, hasInFlightExpansions, lastError, lastNotice, clearNotice } = useGraphExpansion({
     registry,
     cyRef,
     graphState,
@@ -552,7 +672,7 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
           if (cy) {
             // Snapshot so resolveNewSubtreeOverlaps only ever moves what this expansion adds.
             const preExistingIds = new Set(cy.nodes().map((n: any) => n.id()));
-            expandRef.current(nodeData.id, nodeData.type).then(() => resolveNewSubtreeOverlaps(cy, preExistingIds));
+            expandRef.current(nodeData.id, nodeData.type).then(() => resolveNewSubtreeOverlaps(cy, preExistingIds, hasInFlightExpansions));
           }
         }
       });
@@ -610,7 +730,7 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
               await Promise.all(toRecurse.map((n) => expandRecursively(n.id, n.type)));
             };
             Promise.all([expandRecursively(nodeData.id, nodeData.type, true), countsPromise]).then(([, rootCounts]) => {
-              resolveNewSubtreeOverlaps(cy, preExistingIds);
+              resolveNewSubtreeOverlaps(cy, preExistingIds, hasInFlightExpansions);
               // The one toast for the whole walk — clearNotice() wipes any descendant's leftover message before flipping walkActiveRef, so a late-processed one can never win the race.
               clearNotice();
               walkActiveRef.current = false;
@@ -876,6 +996,7 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
             target: edge.target,
             label: edge.label,
             targetColor: nodeTypeEdgeColor(tgtNode.type),
+            sharedTarget: edge.sharedTarget ?? false,
           },
         });
       }
@@ -929,6 +1050,47 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
     }
   }, []);
 
+  // Explicit, opt-in re-layout: recomputes the same clean radial-tree arrangement the initial
+  // render uses (computeRadialLayout), but against whatever is CURRENTLY on the canvas — after a
+  // lot of incremental expansion (many cross-border places, several shared MetaData/Publisher/
+  // Location hubs) the local, parent-anchored placement each expand() adds can compound into a
+  // tangled result no amount of local collision-avoidance can fully undo. This is a "tidy up"
+  // button, not automatic behaviour — expanding a node still only moves what that expansion
+  // itself adds, matching the earlier "don't reorganise the whole graph on every click" call;
+  // this only runs when the user explicitly asks for a clean pass.
+  const handleTidyLayout = useCallback(() => {
+    const cy = cyRef.current;
+    if (!cy || cy.nodes().length === 0) return;
+    const nodes: GraphNode[] = cy.nodes().map((n) => ({
+      id: n.id(),
+      label: n.data('label') ?? '',
+      type: n.data('type'),
+      uri: n.data('uri'),
+      x: 0,
+      y: 0,
+      radius: nodeBaseSize(n.data('type')) / 2,
+    }));
+    const edges: GraphEdge[] = cy.edges().map((e) => ({
+      source: e.data('source'),
+      target: e.data('target'),
+      label: e.data('label'),
+      sharedTarget: e.data('sharedTarget'),
+    }));
+    // Empty rootIds — computeRadialLayout's own fallback (any node with no incoming edge) finds
+    // the right roots itself, same as it does for the very first render.
+    const { positions } = computeRadialLayout(nodes, edges, []);
+    positions.forEach((pos, id) => {
+      const node = cy.getElementById(id);
+      if (node.length > 0) {
+        node.animate({ position: pos } as any, { duration: 600 });
+      }
+    });
+    setTimeout(() => {
+      resolveResidualOverlaps(cy);
+      fitToPanel(cy);
+    }, 700);
+  }, []);
+
   const hasData = data && data.nodes.length > 0;
 
   return (
@@ -979,6 +1141,16 @@ export const GraphPanel = forwardRef<GraphPanelRef, GraphPanelProps>(function Gr
           </button>
           {hasData && (
             <button onClick={handleFit} className="w-7 h-7 flex items-center justify-center rounded bg-white border border-gray-200 text-gray-500 text-xs hover:bg-gray-50" title="Fit graph to view">⟳</button>
+          )}
+          {hasData && (
+            <button
+              onClick={handleTidyLayout}
+              className="w-7 h-7 flex items-center justify-center rounded bg-white border border-gray-200 text-gray-500 text-xs hover:bg-gray-50"
+              title="Tidy layout — rearrange the current graph into a clean radial arrangement"
+              aria-label="Tidy layout"
+            >
+              🧹
+            </button>
           )}
           {hasData && onResetMapView && (
             <button

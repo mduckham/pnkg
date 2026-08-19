@@ -39,6 +39,11 @@ export interface GraphEdge {
   target: string;
   /** Relationship label (shown on the edge) */
   label: string;
+  /** True when this edge's target already had another incoming edge before this one (e.g. two
+   *  PlaceNames sharing one MetaData node) — graphNodeStyles.ts bows these outward into open
+   *  space, since the target's position was only ever chosen relative to whichever edge reached
+   *  it first. */
+  sharedTarget?: boolean;
 }
 
 /** The complete graph data for visualization. */

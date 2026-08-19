@@ -249,6 +249,32 @@ export function getCytoscapeStyles(): any[] {
         ...edgeBase,
       },
     },
+    // A "second" edge into an already-existing node (useGraphExpansion.ts's `sharedTarget`) has
+    // no say in that node's position — it was placed relative to whoever reached it first — so a
+    // straight line here would cut through whatever sits between the two. Bows it perpendicular,
+    // on whichever side points away from the graph's centre (root sits at the origin), routing it
+    // through the layout's open outer space instead of its crowded interior.
+    {
+      selector: "edge[?sharedTarget]",
+      style: {
+        "curve-style": "unbundled-bezier",
+        "control-point-weights": 0.5,
+        "control-point-distances": (ele: any) => {
+          const src = ele.source().position();
+          const tgt = ele.target().position();
+          const midX = (src.x + tgt.x) / 2;
+          const midY = (src.y + tgt.y) / 2;
+          const dx = tgt.x - src.x;
+          const dy = tgt.y - src.y;
+          const len = Math.hypot(dx, dy) || 1;
+          // Perpendicular to the edge; sign picked so it points away from the origin at the midpoint.
+          const perpX = -dy / len;
+          const perpY = dx / len;
+          const awayFromCentre = perpX * midX + perpY * midY >= 0 ? 1 : -1;
+          return awayFromCentre * 70;
+        },
+      } as any,
+    },
     // Line style overrides only (dashed for skos:exactMatch) — colour is uniform, set above.
     ...Object.entries(appConfig.edgeStyles).map(([predicate, style]) => ({
       selector: `edge[label='${predicate}']`,

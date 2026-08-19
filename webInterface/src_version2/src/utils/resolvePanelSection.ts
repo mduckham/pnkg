@@ -3,7 +3,7 @@
 import type { MultiValuedPlace } from "../types/place";
 import type { SelectedGraphNode } from "../hooks/useSelectedGraphNode";
 
-export type SectionCategory = "geometry" | "names" | "crossBorder";
+export type SectionCategory = "geometry" | "names" | "crossBorder" | "place";
 
 /** Namespaces a category by its owning place's URI so a shared-geometry click across stacked MultiValuedPlace panels can't cross-wire the wrong place's section. */
 export function sectionKey(placeUri: string, category: SectionCategory): string {
@@ -14,18 +14,25 @@ export function resolvePanelSection(
   node: SelectedGraphNode | null,
   places: MultiValuedPlace[]
 ): string | null {
-  if (!node?.uri) return null;
+  if (!node) return null;
 
   for (const place of places) {
-    if (place.geometries.some((g) => g.uri === node.uri)) {
+    if (node.uri && place.geometries.some((g) => g.uri === node.uri)) {
       return sectionKey(place.placeUri, "geometry");
     }
-    if (place.names.some((n) => n.uri === node.uri)) {
+    if (node.uri && place.names.some((n) => n.uri === node.uri)) {
       return sectionKey(place.placeUri, "names");
     }
     // Metadata/Publisher/Location/etc. deliberately not handled here (see module doc) — falls through to null so DataPanel's async findResourcePath search finds the right nested section.
-    if (place.crossBorderPlaces.some((cb) => cb.placeUri === node.uri)) {
+    if (node.uri && place.crossBorderPlaces.some((cb) => cb.placeUri === node.uri)) {
       return sectionKey(place.placeUri, "crossBorder");
+    }
+    // The Place node itself, or its classification badge. Classification's canvas node is keyed
+    // by a synthetic id (class:<value>), not a real URI, whenever the backend has no
+    // classificationUri for it — so match on id too, not just uri (graphBuilder.ts's own
+    // convention for this node, unchanged here).
+    if (node.uri === place.placeUri || node.id === `class:${place.classification}`) {
+      return sectionKey(place.placeUri, "place");
     }
   }
 
@@ -45,8 +52,11 @@ export interface ResolvedLiteralOwner {
   predicate: string;
 }
 
-/** Literal-value counterpart to resolvePanelSection: a literal node has only a synthetic id, so this maps it to its real owning resource's URI plus which property row to highlight — covers only graphBuilder.ts's eager-render id patterns, not generic-expansion literals. */
-export function resolveLiteralOwnerUri(id: string, places: MultiValuedPlace[]): ResolvedLiteralOwner | null {
+/** Literal-value counterpart to resolvePanelSection: a literal node has only a synthetic id, so this maps it to its real owning resource's URI plus which property row to highlight — covers only graphBuilder.ts's eager-render id patterns, not generic-expansion literals.
+ *  Every id below is now keyed by its owning resource's own uri (per-owner grey nodes, not
+ *  shared by value — see graphBuilder.ts/useGraphExpansion.ts), so the owner uri is just the
+ *  id's suffix; no `places` search needed any more. */
+export function resolveLiteralOwnerUri(id: string): ResolvedLiteralOwner | null {
   // Name literal — "<nameUri>::name"
   if (id.endsWith("::name")) {
     return { ownerUri: id.slice(0, -"::name".length), predicate: PN_NAME_PREDICATE };
@@ -55,32 +65,18 @@ export function resolveLiteralOwnerUri(id: string, places: MultiValuedPlace[]): 
   if (id.startsWith("literal:wkt:")) {
     return { ownerUri: id.slice("literal:wkt:".length), predicate: GEO_AS_WKT_PREDICATE };
   }
-  // Status literal — value-keyed (graphBuilder.ts dedupes identical status text onto one shared node), so match against whichever of this place's names actually has that status.
+  // Status literal — "literal:status:<placeNameUri>"
   if (id.startsWith("literal:status:")) {
-    const value = id.slice("literal:status:".length);
-    for (const place of places) {
-      const match = place.names.find((n) => n.status === value);
-      if (match) return { ownerUri: match.uri, predicate: PN_STATUS_PREDICATE };
-    }
-    return null;
+    return { ownerUri: id.slice("literal:status:".length), predicate: PN_STATUS_PREDICATE };
   }
-  // Publisher name literal — resolves to the PUBLISHER RESOURCE's own uri (one hop further), landing where clicking the Publisher node itself would, highlighting its own foaf:name row.
+  // Publisher name literal — "literal:pub:<publisherUri>", resolves to the PUBLISHER RESOURCE's
+  // own uri (one hop further), landing where clicking the Publisher node itself would, highlighting its own foaf:name row.
   if (id.startsWith("literal:pub:")) {
-    const value = id.slice("literal:pub:".length);
-    for (const place of places) {
-      const match = place.names.find((n) => n.publisher === value && n.publisherUri);
-      if (match?.publisherUri) return { ownerUri: match.publisherUri, predicate: FOAF_NAME_PREDICATE };
-    }
-    return null;
+    return { ownerUri: id.slice("literal:pub:".length), predicate: FOAF_NAME_PREDICATE };
   }
-  // Location label literal — "literal:loc:<value>", same reasoning.
+  // Location label literal — "literal:loc:<locationUri>", same reasoning.
   if (id.startsWith("literal:loc:")) {
-    const value = id.slice("literal:loc:".length);
-    for (const place of places) {
-      const match = place.names.find((n) => n.location === value && n.locationUri);
-      if (match?.locationUri) return { ownerUri: match.locationUri, predicate: SKOS_PREF_LABEL_PREDICATE };
-    }
-    return null;
+    return { ownerUri: id.slice("literal:loc:".length), predicate: SKOS_PREF_LABEL_PREDICATE };
   }
   return null;
 }

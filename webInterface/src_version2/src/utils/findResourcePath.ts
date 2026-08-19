@@ -34,6 +34,12 @@ export async function findResourcePath(
     for (const entry of entries) childUris.add(entry.value);
   }
 
+  // A direct (one-hop) child needs no further fetching — checked before recursing into any
+  // sibling, so e.g. wasNamedBy (a direct PlaceName child) resolves instantly instead of paying
+  // for real SPARQL round-trips into MetaData/Publisher/Location first just because they happen
+  // to iterate earlier.
+  if (childUris.has(targetUri)) return [rootUri, targetUri];
+
   for (const child of childUris) {
     const subPath = await findResourcePath(child, targetUri, maxDepth - 1, visited);
     if (subPath) return [rootUri, ...subPath];

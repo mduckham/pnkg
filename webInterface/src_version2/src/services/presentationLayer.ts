@@ -25,6 +25,7 @@ function buildNodeLabel(uri: string, nodeType: string, knownLabels?: Map<string,
 const LOCI_IS_MEMBER_OF = 'http://linked.data.gov.au/def/loci#isMemberOf';
 const DCTERMS_PUBLISHER = 'http://purl.org/dc/terms/publisher';
 const DCTERMS_SPATIAL = 'http://purl.org/dc/terms/spatial';
+const PN_WAS_NAMED_BY = 'http://linked.data.gov.au/def/placenames/wasNamedBy';
 
 /** Resolves a URI object's node type + label with predicate-driven overrides (loci:isMemberOf → plain "Place Name Meta Data", since its real title varies per jurisdiction; publisher/spatial → generic role label, not the literal child's own text) so it reads identically wherever it's found. */
 function resolveNodeTypeAndLabel(
@@ -79,7 +80,8 @@ function findRule(
 export function classifyTriples(
   triples: RawTriple[],
   rules: PresentationRulesConfig,
-  existingNodeUris?: Set<string>
+  existingNodeUris?: Set<string>,
+  sourceUri?: string
 ): ClassifiedExpansionResult {
   const graphNodes: GraphNodeResult[] = [];
   const panelProperties: PanelProperty[] = [];
@@ -142,6 +144,25 @@ export function classifyTriples(
         category: rule.category,
         isExternalLink: triple.object.startsWith('http://') || triple.object.startsWith('https://'),
       });
+
+      // Per Nayomi/Prof's request: the naming Authority reads visually as a grey attribute
+      // (styled the same as literal nodes), so — like status/publisher-name/location-name —
+      // it's duplicated per owning PlaceName rather than shared by URI like a real resource.
+      // Bypasses the dedup below entirely: always a fresh node keyed by the owner (sourceUri),
+      // though `uri` still carries the real Authority URI so click-through/expansion still works.
+      if (triple.predicate === PN_WAS_NAMED_BY && sourceUri) {
+        const { nodeType, label } = resolveNodeTypeAndLabel(triple.object, triple.predicate, triple.objectRdfType, knownLabels, knownIdentifiers);
+        graphNodes.push({
+          id: `${sourceUri}::wasNamedBy`,
+          uri: triple.object,
+          label,
+          type: nodeType,
+          rdfType: triple.objectRdfType,
+          edgeLabel: predicateLabel,
+          category: rule.category,
+        });
+        continue;
+      }
 
       // Already visible elsewhere — no duplicate node, but the edge is still real; useGraphExpansion's dedup redirects it to the existing node.
       if (existingNodeUris && existingNodeUris.has(triple.object)) {

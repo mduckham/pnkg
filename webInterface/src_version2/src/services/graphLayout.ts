@@ -260,19 +260,28 @@ export interface ExpansionLayoutResult {
   positions: Map<string, LayoutPosition>;
 }
 
-/** Computes fan-out positions for newly-expanded child nodes, using the same type-ordering, outward-facing convention, and stepForChild hop logic as computeRadialLayout, so they land consistently with the rest of the graph. */
+/** Computes fan-out positions for newly-expanded child nodes, using the same type-ordering, outward-facing convention, and stepForChild hop logic as computeRadialLayout, so they land consistently with the rest of the graph.
+ *  `preferredDirection` (radians), when given, continues the same bearing the parent was itself
+ *  reached from — mirrors how computeRadialLayout's assign() narrows an angular window down
+ *  through each generation rather than each level re-deriving direction from scratch. Without
+ *  it (root-level expansion, or a parent with no incoming edge) falls back to "away from the
+ *  graph's centre", which is only a good proxy for "continue outward" far from the centre —
+ *  near it, small position deltas swing that angle wildly, zig-zagging a branch's own
+ *  grandchildren off in an unrelated direction from where its parent already sits. */
 export function computeExpansionPositions(
   parentPos: LayoutPosition,
   newNodes: Array<{ id: string; type: string; label?: string }>,
   radiusStep = 260,
-  parentType?: string
+  parentType?: string,
+  preferredDirection?: number
 ): ExpansionLayoutResult {
   const positions = new Map<string, LayoutPosition>();
   if (newNodes.length === 0) return { positions };
 
-  // Direction away from the graph's centre — falls back to "east" if the parent is at origin.
   const outward =
-    parentPos.x === 0 && parentPos.y === 0 ? 0 : Math.atan2(parentPos.y, parentPos.x);
+    preferredDirection !== undefined
+      ? preferredDirection
+      : parentPos.x === 0 && parentPos.y === 0 ? 0 : Math.atan2(parentPos.y, parentPos.x);
 
   const sorted = [...newNodes].sort((a, b) => typeRank(a.type) - typeRank(b.type));
   const steps = sorted.map((node) => (parentType ? stepForChild(parentType, node.type, node.label) : radiusStep));

@@ -73,12 +73,12 @@ export async function expandNode(
   if (otherRelationshipLimit === undefined) {
     const cached = getCachedTriples(uri);
     if (cached) {
-      return classifyTriples(cached, placeNamesPresentationRules, existingNodeUris);
+      return classifyTriples(cached, placeNamesPresentationRules, existingNodeUris, uri);
     }
 
     const triples = await attachObjectLabels(await fetchOutgoingTriples(uri, '', PANEL_ONLY_LIMIT));
     cacheTriples(uri, triples);
-    return classifyTriples(triples, placeNamesPresentationRules, existingNodeUris);
+    return classifyTriples(triples, placeNamesPresentationRules, existingNodeUris, uri);
   }
 
   const otherPredicateClause = OTHER_GRAPH_VISIBLE_PREDICATES.map((p) => `<${p}>`).join(', ');
@@ -99,7 +99,7 @@ export async function expandNode(
     cacheTriples(uri, triples);
   }
 
-  return { ...classifyTriples(triples, placeNamesPresentationRules, existingNodeUris), otherTruncated };
+  return { ...classifyTriples(triples, placeNamesPresentationRules, existingNodeUris, uri), otherTruncated };
 }
 
 /** Result of {@link countExpandableRelationships}. */

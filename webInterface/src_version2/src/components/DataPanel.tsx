@@ -95,13 +95,13 @@ function PanelBody({
     if (rawSelectedGraphNode?.uri || !rawSelectedGraphNode?.id) {
       return { selectedGraphNode: rawSelectedGraphNode, highlightPredicate: null as string | null };
     }
-    const resolved = resolveLiteralOwnerUri(rawSelectedGraphNode.id, multiValuedData?.places ?? []);
+    const resolved = resolveLiteralOwnerUri(rawSelectedGraphNode.id);
     if (!resolved) return { selectedGraphNode: rawSelectedGraphNode, highlightPredicate: null as string | null };
     return {
       selectedGraphNode: { ...rawSelectedGraphNode, uri: resolved.ownerUri },
       highlightPredicate: resolved.predicate,
     };
-  }, [rawSelectedGraphNode, multiValuedData]);
+  }, [rawSelectedGraphNode]);
 
   // One shared accordion-state instance for the whole panel — the KG-selected node auto-expands its section; manual opens are separate/additive.
   const { isOpen, isAutoOpen, setAuto, toggleManual } = useAccordionSections();
@@ -126,6 +126,14 @@ function PanelBody({
       setAuto(fastMatch);
       setActiveNameOverrideUri(searchedNameUri);
       setActiveGeometryOverrideUri(null);
+      // Place/Classification clicks resolve to the "place" category — unlike Name/Geometry,
+      // that block isn't always already in view (e.g. a shared-geometry or cross-border place's
+      // own Place block further down the panel), so scroll it in too. sectionKey's own format
+      // is `${placeUri}::${category}`, so stripping the known suffix recovers the placeUri.
+      const PLACE_SECTION_SUFFIX = "::place";
+      if (fastMatch.endsWith(PLACE_SECTION_SUFFIX)) {
+        setPendingScrollUri(fastMatch.slice(0, -PLACE_SECTION_SUFFIX.length));
+      }
       return;
     }
     if (!selectedGraphNode?.uri) {
@@ -143,18 +151,39 @@ function PanelBody({
     }
     const nameRoots = primaryPlace.names.map((n) => n.uri);
     const geometryRoots = primaryPlace.geometries.map((g) => g.uri);
-    if (nameRoots.length === 0 && geometryRoots.length === 0) {
+    // Cross-border places are walkable roots too — expandNode fetches ANY uri's own triples, so
+    // starting from a cross-border place's own uri naturally discovers its Name/Geometry/Metadata
+    // (and even further cross-border hops, since skos:exactMatch is itself a walkable link),
+    // reusing the exact same recursive search Name/Geometry roots already use.
+    const crossBorderRoots = primaryPlace.crossBorderPlaces.map((cb) => cb.placeUri);
+    if (nameRoots.length === 0 && geometryRoots.length === 0 && crossBorderRoots.length === 0) {
       setAuto(null);
       return;
     }
     let cancelled = false;
-    findResourcePathFromRoots([...nameRoots, ...geometryRoots], selectedGraphNode.uri).then((result) => {
+    findResourcePathFromRoots([...nameRoots, ...geometryRoots, ...crossBorderRoots], selectedGraphNode.uri).then((result) => {
       if (cancelled) return;
       if (result) {
-        const ownerCategory: SectionCategory = nameRoots.includes(result.rootUri) ? "names" : "geometry";
-        setAuto([sectionKey(primaryPlace.placeUri, ownerCategory), ...result.path]);
-        setActiveNameOverrideUri(ownerCategory === "names" ? result.rootUri : searchedNameUri);
-        setActiveGeometryOverrideUri(ownerCategory === "geometry" ? result.rootUri : null);
+        if (crossBorderRoots.includes(result.rootUri)) {
+          // Found inside a cross-border place's own subtree, possibly several hops of chained
+          // cross-border matches deep — result.path lists every place uri along that chain plus
+          // the final resource's own path. CrossBorderSection's own isAutoOpenFn effect (fetch +
+          // mark expanded) reacts to a place's raw uri appearing in the auto-open set, but that
+          // only makes its DATA ready — the "Cross-border" ACCORDION WRAPPER around each nested
+          // place's own list is a separate key (sectionKey(uri, "crossBorder")) that also has to
+          // be open, or AccordionSection never renders that list at all, however ready the data
+          // is. Adding it for every uri in the path is harmless for uris that aren't a place with
+          // their own cross-border list — nothing ever checks that key for those.
+          const crossBorderAccordionKeys = result.path.map((uri) => sectionKey(uri, "crossBorder"));
+          setAuto([sectionKey(primaryPlace.placeUri, "crossBorder"), ...crossBorderAccordionKeys, ...result.path]);
+          setActiveNameOverrideUri(searchedNameUri);
+          setActiveGeometryOverrideUri(null);
+        } else {
+          const ownerCategory: SectionCategory = nameRoots.includes(result.rootUri) ? "names" : "geometry";
+          setAuto([sectionKey(primaryPlace.placeUri, ownerCategory), ...result.path]);
+          setActiveNameOverrideUri(ownerCategory === "names" ? result.rootUri : searchedNameUri);
+          setActiveGeometryOverrideUri(ownerCategory === "geometry" ? result.rootUri : null);
+        }
         setPendingScrollUri(selectedGraphNode.uri);
       }
       // else: genuinely unresolvable (e.g. nested deep in a Cross-border place's own subtree). Deliberately
