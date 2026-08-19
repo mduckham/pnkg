@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+/* Matches v1's own font stack exactly (placenames.org's #graphPanel/popup
+   CSS) — overrides Tailwind's default font-sans stack, so every font-sans
+   element (Preflight's body default plus any explicit font-sans class)
+   picks it up app-wide, not just one component. */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+/* Push MapLibre zoom controls lower to avoid search bar overlap */
+.maplibregl-ctrl-top-left {
+  top: 60px !important;
+}
+
+/* Force hide attribution text — only show small (i) button */
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib,
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib {
+  font-size: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  min-height: 20px !important;
+}
+.maplibregl-ctrl-attrib a,
+.maplibregl-ctrl-attrib span {
+  display: none !important;
+}
+.maplibregl-ctrl-attrib-button {
+  display: block !important;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact-show a,
+.maplibregl-ctrl-attrib.maplibregl-compact-show span {
+  display: inline !important;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  font-size: 10px !important;
+  padding: 2px 24px 2px 4px !important;
+  background: rgba(255,255,255,0.9) !important;
+}

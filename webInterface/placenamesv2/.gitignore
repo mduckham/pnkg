@@ -1,0 +1,50 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# SSH keys - NEVER push to GitHub
+*.pem
+pem/
+
+# Generated PMTiles build intermediates (regenerate via scripts/*.mjs —
+# see fetchAllGeometriesCsv.mjs, buildFinalGeojson.mjs) — these are large
+# (100MB+) derived data, not source.
+scripts/*.pmtiles
+scripts/*.geojson
+scripts/*.csv
+scripts/*.ndjson
+scripts/raw_results.json
+
+# pnkg is a SEPARATE, sibling repo (its own .git — see its own remote for
+# the real history), not part of this one. It ended up here as an
+# unintended git submodule reference (no .gitmodules ever existed, so it
+# wasn't even a properly configured submodule) — see README.md/CODEBASE_GUIDE.md
+# for how this app relates to it. Keep it out of this repo entirely.
+/pnkg/
+
+# 735MB+ RDF dump — nowhere near GitHub's 100MB hard file limit, and not
+# something this frontend app reads directly (it queries Fuseki over
+# SPARQL, see CODEBASE_GUIDE.md §1). Reference material, not source —
+# keep it local, don't track it.
+/pnkg20260709.ttl
